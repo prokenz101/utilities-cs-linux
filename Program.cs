@@ -1,1 +1,1 @@
-﻿//* Initial commit for main branch (contains the primary utilities-cs program)
+﻿//* Initial commit for setup file of utilities-cs-linux
