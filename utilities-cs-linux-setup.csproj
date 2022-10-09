@@ -5,6 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>utilities_cs_linux_setup</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
