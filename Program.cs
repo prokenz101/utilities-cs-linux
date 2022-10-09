@@ -1,1 +1,7 @@
-﻿//* Initial commit for main branch (contains the primary utilities-cs program)
+﻿namespace utilities_cs_linux {
+    class Program {
+        static void Main(string[] args) {
+            //* Every program starts at the Main method.
+        }
+    }
+}
