@@ -1,1 +1,7 @@
-﻿//* Initial commit for setup file of utilities-cs-linux
+﻿namespace utilities_cs_linux_setup {
+    class Program {
+        static void Main(string[] args) {
+            //* An entry point for the setup program.
+        }
+    }
+}
