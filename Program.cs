@@ -36,7 +36,8 @@
             //! Move the obtained executable to the root utilities-cs folder
             File.Move(
                 Path.Combine(UtilitiesFolderPath, "utilities-cs-linux/bin/Release/net6.0/linux-x64/publish/utilities-cs-linux"),
-                Path.Combine(UtilitiesFolderPath, "utilities-cs")
+                Path.Combine(UtilitiesFolderPath, "utilities-cs"),
+                overwrite: true
             ); Console.WriteLine("\nMoved the obtained executable to root folder.");
 
             //! Delete the cloned folder
