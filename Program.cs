@@ -3,6 +3,7 @@
         static void Main(string[] args) {
             Console.WriteLine("Hello, World!");
             Console.WriteLine("This program is running as intended.");
+            Console.WriteLine("This is an extra line of code to test another branch.");
         }
     }
 }
