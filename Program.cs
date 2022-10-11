@@ -1,9 +1,21 @@
 ﻿namespace utilities_cs_linux_setup {
     class Program {
-        public static string UtilitiesFolderPath = Path.Combine(Environment.GetEnvironmentVariable("HOME")!, "utilities-cs");
+        public static string UtilitiesFolderPath = Path.Combine(
+            "/home",
+            System.Environment.UserName,
+            "utilities-cs"
+        );
         public static string IconPath = Path.Combine(UtilitiesFolderPath, "Assets/UtilitiesIcon.ico");
         public static string IconURL = "https://raw.githubusercontent.com/prokenz101/utilities-cs-linux/setup/Assets/UtilitiesIcon.ico";
+        public static string MainExecutablePath = Path.Combine(UtilitiesFolderPath, "utilities-cs");
         static void Main(string[] args) {
+            //* Checking if program is run as sudo
+            if (RootChecker.IsRoot()) {
+                Console.WriteLine(@"This setup program cannot be run with root permissions.
+Please try again without root permissions (sudo).");
+                return;
+            }
+
             Directory.CreateDirectory(Path.Combine(UtilitiesFolderPath, "Assets")); //* Creating folders
 
             //! Getting the icon and putting it in the Assets folder
@@ -13,7 +25,9 @@
             File.WriteAllBytes(IconPath, iconResponseOutput);
             Console.WriteLine("Got the icon and wrote it to a file in Assets.\n");
 
-            //! Cloning the main repository
+            //! Getting the executable and putting it in the main folder
+
+            //? Cloning the main repository
             var cloneMainProcess = new System.Diagnostics.Process();
             cloneMainProcess.StartInfo.FileName = "git";
             cloneMainProcess.StartInfo.Arguments = "clone https://github.com/prokenz101/utilities-cs-linux.git";
@@ -23,7 +37,7 @@
             cloneMainProcess.WaitForExit();
             Console.WriteLine("\nCloned the repository.\n");
 
-            //! Building the cloned project into an executable
+            //? Building the cloned project into an executable
             var buildClonedProject = new System.Diagnostics.Process();
             buildClonedProject.StartInfo.FileName = "dotnet";
             buildClonedProject.StartInfo.Arguments = "publish -c Release --self-contained false";
@@ -33,16 +47,150 @@
             buildClonedProject.WaitForExit();
             Console.WriteLine("\nBuilt the project.");
 
-            //! Move the obtained executable to the root utilities-cs folder
+            //?Move the obtained executable to the root utilities-cs folder
             File.Move(
-                Path.Combine(UtilitiesFolderPath, "utilities-cs-linux/bin/Release/net6.0/linux-x64/publish/utilities-cs-linux"),
-                Path.Combine(UtilitiesFolderPath, "utilities-cs"),
+                Path.Combine(
+                    UtilitiesFolderPath,
+                    "utilities-cs-linux/bin/Release/net6.0/linux-x64/publish/utilities-cs-linux"
+                ),
+                MainExecutablePath,
                 overwrite: true
             ); Console.WriteLine("\nMoved the obtained executable to root folder.");
 
-            //! Delete the cloned folder
+            //? Delete the cloned folder
             Directory.Delete(Path.Combine(UtilitiesFolderPath, "utilities-cs-linux"), recursive: true);
-            Console.WriteLine("\nDeleted the cloned folder.");
+            Console.WriteLine("\nDeleted the cloned folder.\n");
+
+            //! Creating the .desktop file maker
+
+            //? Creating C# project
+            var createDesktopFileMaker = new System.Diagnostics.Process();
+            createDesktopFileMaker.StartInfo.FileName = "dotnet";
+            createDesktopFileMaker.StartInfo.Arguments = "new console -n \"desktopfilemaker\"";
+            createDesktopFileMaker.StartInfo.CreateNoWindow = true;
+            createDesktopFileMaker.StartInfo.WorkingDirectory = UtilitiesFolderPath;
+            createDesktopFileMaker.Start();
+            createDesktopFileMaker.WaitForExit();
+            Console.WriteLine("\nCreated the .desktop file maker.");
+
+            //? Edit code of the Program.cs file in the project
+            File.WriteAllText(
+                Path.Combine(UtilitiesFolderPath, "desktopfilemaker/Program.cs"),
+                $@"namespace u_cs_desktop_file_maker {{
+    class Program {{
+        static void Main(string[] args) {{
+            if (!(RootChecker.IsRoot())) {{
+                Console.WriteLine(@""This program has to be run with root permissions.
+Please try again with """"sudo"""" at the beginning of whatever you used ran to run this application."");
+                return;
+            }}
+
+            File.WriteAllText(
+                ""/usr/share/applications/utilities-cs.desktop"",
+                @""[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Terminal=false
+Exec={MainExecutablePath}
+Name=utilities-cs
+Icon={IconPath}""
+            );
+
+            Console.WriteLine(""Created the .desktop file."");
+            Console.WriteLine(""The setup of utilities-cs is now complete."");
+        }}
+    }}
+
+    public static class RootChecker {{
+        [System.Runtime.InteropServices.DllImport(""libc"")]
+        public static extern uint getuid();
+
+        public static bool IsRoot() {{ return getuid() == 0; }}
+    }}
+}}"
+            );
+            Console.WriteLine("\nEdited the Program.cs file of the .desktop file maker.");
+
+            //? Edit properties of the .csproj file
+            File.WriteAllText(
+                Path.Combine(UtilitiesFolderPath, "desktopfilemaker/desktopfilemaker.csproj"),
+                @"<Project Sdk=""Microsoft.NET.Sdk"">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>u_cs_desktop_file_maker</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>"
+            );
+            Console.WriteLine("\nEdited the .csproj file of the .desktop file maker.\n");
+
+            //? Build project
+            var buildDesktopFileMaker = new System.Diagnostics.Process();
+            createDesktopFileMaker.StartInfo.FileName = "dotnet";
+            createDesktopFileMaker.StartInfo.Arguments = "publish -c Release --self-contained false";
+            createDesktopFileMaker.StartInfo.CreateNoWindow = true;
+            createDesktopFileMaker.StartInfo.WorkingDirectory = Path.Combine(
+                UtilitiesFolderPath, "desktopfilemaker"
+            ); createDesktopFileMaker.Start();
+            createDesktopFileMaker.WaitForExit();
+            Console.WriteLine("\nCreated the .desktop file maker.");
+
+            //? Ask user to run .desktop file maker executable with sudo permissions
+            Console.WriteLine("\n\n\nFINAL SETUP:");
+            Console.WriteLine($@"
+Please run the following command in a new terminal/terminal tab:
+
+ONCE COMPLETED, PLEASE COME BACK TO THIS TERMINAL/TERMINAL TAB
+
+cd {Path.Combine(UtilitiesFolderPath, "desktopfilemaker/bin/Release/net6.0/linux-x64/publish")} && sudo ./desktopfilemaker
+
+This will create a .desktop file which will allow you to open utilities-cs from your apps list."
+
+
+            );
+
+            Thread.Sleep(5000);
+
+            Console.WriteLine(@"
+-----------------------------------------
+
+Have you ran the command? (y/n)
+
+PLEASE READ THIS CAREFULLY
+(y) -> Will delete the .desktop file maker and its project files (Completes setup process)
+(n) -> You do not want a .desktop file (Will also delete the .desktop file maker and its project files)
+
+Running this setup file again will prompt you to create the .desktop file again.
+Please enter: y/n");
+
+            string? inputNullable = Console.ReadLine();
+            string input = inputNullable == null ? "" : inputNullable;
+
+            if (input == "y" | input == "n") {
+                Directory.Delete(Path.Combine(UtilitiesFolderPath, "desktopfilemaker"), recursive: true);
+            } else {
+                Console.WriteLine("\nInvalid input.");
+                Console.WriteLine("Deleting desktop file maker anyway.");
+                Console.WriteLine(
+                    "If you did not run the command and still want a .desktop file, then run this setup file again."
+                );
+            }
+
+            Console.WriteLine("\nSetup Complete.");
         }
+    }
+
+    public static class RootChecker {
+        [System.Runtime.InteropServices.DllImport("libc")]
+        public static extern uint getuid();
+
+        public static bool IsRoot() { return getuid() == 0; }
     }
 }
