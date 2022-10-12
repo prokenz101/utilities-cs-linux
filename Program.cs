@@ -117,8 +117,12 @@ Name=utilities-cs
 Icon={IconPath}""
             );
 
-            Console.WriteLine(""Created the .desktop file."");
+            Console.WriteLine(""\nCreated the .desktop file."");
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(""The setup of utilities-cs is now complete."");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(""You can close this window/tab and input \""y\"" in the setup program."");
+            Console.ResetColor();
         }}
     }}
 
@@ -163,18 +167,23 @@ Icon={IconPath}""
             Console.WriteLine("\nCreated the .desktop file maker.");
 
             //? Ask user to run .desktop file maker executable with sudo permissions
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("\n\n\nFINAL SETUP:");
+            Console.ResetColor();
             Console.WriteLine($@"
 Please run the following command in a new terminal/terminal tab:
 
-ONCE COMPLETED, PLEASE COME BACK TO THIS TERMINAL/TERMINAL TAB
+ONCE COMPLETED, PLEASE COME BACK TO THIS TERMINAL/TERMINAL TAB");
 
-cd {Path.Combine(UtilitiesFolderPath, "desktopfilemaker/bin/Release/net6.0/linux-x64/publish")} && sudo ./desktopfilemaker
-
-This will create a .desktop file which will allow you to open utilities-cs from your apps list."
-
-
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(
+                $"\ncd {Path.Combine(UtilitiesFolderPath, "desktopfilemaker/bin/Release/net6.0/linux-x64/publish")} && sudo ./desktopfilemaker\n"
             );
+
+            Console.ResetColor();
+
+            Console.WriteLine(@"This will install a package called xsel which is required for pyperclip (python).
+It will also create a .desktop file which will allow you to open utilities-cs from your apps list.");
 
             Thread.Sleep(5000);
 
