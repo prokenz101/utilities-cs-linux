@@ -58,6 +58,20 @@ Please try again without root permissions (sudo).");
             Directory.Delete(Path.Combine(UtilitiesFolderPath, "utilities-cs-linux"), recursive: true);
             Console.WriteLine("\nDeleted the cloned folder.\n");
 
+            //! Python integrations
+
+            //? Installing required pip packages
+            var pipPackagesInstall = new System.Diagnostics.Process();
+            pipPackagesInstall.StartInfo.FileName = "pip3";
+            pipPackagesInstall.StartInfo.Arguments = "install pyautogui pyperclip pynput";
+            pipPackagesInstall.StartInfo.CreateNoWindow = true;
+            pipPackagesInstall.StartInfo.WorkingDirectory = Home;
+            pipPackagesInstall.Start();
+            pipPackagesInstall.WaitForExit();
+            Console.WriteLine("\nInstalled required pip packages (python)");
+
+            //TODO: Implement python files stuff
+
             //! Creating the .desktop file maker
 
             //? Creating C# project
