@@ -185,7 +185,7 @@ ONCE COMPLETED, PLEASE COME BACK TO THIS TERMINAL/TERMINAL TAB");
             Console.WriteLine(@"This will install a package called xsel which is required for pyperclip (python).
 It will also create a .desktop file which will allow you to open utilities-cs from your apps list.");
 
-            Thread.Sleep(5000);
+            Thread.Sleep(9000);
 
             Console.WriteLine(@"
 -----------------------------------------
