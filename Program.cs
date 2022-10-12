@@ -96,6 +96,15 @@ Please try again with """"sudo"""" at the beginning of whatever you used ran to 
                 return;
             }}
 
+            var getXsel = new System.Diagnostics.Process();
+            getXsel.StartInfo.FileName = ""sudo"";
+            getXsel.StartInfo.Arguments = ""apt install xsel"";
+            getXsel.StartInfo.CreateNoWindow = true;
+            getXsel.StartInfo.WorkingDirectory = ""/"";
+            getXsel.Start();
+            getXsel.WaitForExit();
+            Console.WriteLine(""\nGot \""xsel\"", a dependency for the paste() function in pyperclip."");
+
             File.WriteAllText(
                 ""/usr/share/applications/utilities-cs.desktop"",
                 @""[Desktop Entry]
