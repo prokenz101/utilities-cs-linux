@@ -194,25 +194,31 @@ Have you ran the command? (y/n)
 
 PLEASE READ THIS CAREFULLY
 (y) -> Will delete the .desktop file maker and its project files (Completes setup process)
-(n) -> You do not want a .desktop file (Will also delete the .desktop file maker and its project files)
+(n) -> Why?! (please run it)
 
-Running this setup file again will prompt you to create the .desktop file again.
 Please enter: y/n");
 
             string? inputNullable = Console.ReadLine();
             string input = inputNullable == null ? "" : inputNullable;
 
-            if (input == "y" | input == "n") {
-                Directory.Delete(Path.Combine(UtilitiesFolderPath, "desktopfilemaker"), recursive: true);
+            if (input == "y") {
+                Console.WriteLine("\nSetup Complete.");
+            } else if (input == "n") {
+                Console.WriteLine("\nIf you did not run the command, then utilities-cs will not work properly.");
+                Console.WriteLine("Please run this setup file again if you would like to fix this.");
+                Console.WriteLine("Deleted desktop file maker.");
             } else {
                 Console.WriteLine("\nInvalid input.");
                 Console.WriteLine("Deleting desktop file maker anyway.");
                 Console.WriteLine(
-                    "If you did not run the command and still want a .desktop file, then run this setup file again."
+                    @"If you did not run the command shown above, then your utilities-cs installation will be broken and will not work properly.
+Please re-run the setup file and run that command if you would like to fix this.
+
+If you DID run the command above, then your utilities-cs installation is complete."
                 );
             }
 
-            Console.WriteLine("\nSetup Complete.");
+            Directory.Delete(Path.Combine(UtilitiesFolderPath, "desktopfilemaker"), recursive: true);
         }
     }
 
