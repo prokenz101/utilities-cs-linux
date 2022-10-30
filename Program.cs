@@ -1,7 +1,9 @@
 ﻿namespace utilities_cs_linux {
     class Program {
         static void Main(string[] args) {
-            //* Every program starts at the Main method.
+            Console.WriteLine("Hello, World!");
+            Console.WriteLine("This program is running as intended.");
+            Console.WriteLine("This is an extra line of code to test another branch.");
         }
     }
 }
