@@ -2,7 +2,7 @@
     class Program {
         public static string Home = Path.Combine("/home", System.Environment.UserName);
         public static string UtilitiesFolderPath = Path.Combine(Home, "utilities-cs");
-        public static string IconPath = Path.Combine(UtilitiesFolderPath, "Assets/UtilitiesIcon.ico");
+        public static string IconPath = Path.Combine(UtilitiesFolderPath, "Assets/UtilitiesIcon.png");
         public static string IconURL = "https://raw.githubusercontent.com/prokenz101/utilities-cs-linux/setup/Assets/UtilitiesIcon.ico";
         public static string MainExecutablePath = Path.Combine(UtilitiesFolderPath, "utilities-cs");
         static void Main(string[] args) {
