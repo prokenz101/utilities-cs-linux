@@ -5,6 +5,7 @@
         public static string IconPath = Path.Combine(UtilitiesFolderPath, "Assets/UtilitiesIcon.png");
         public static string IconURL = "https://raw.githubusercontent.com/prokenz101/utilities-cs-linux/setup/Assets/UtilitiesIcon.ico";
         public static string MainExecutablePath = Path.Combine(UtilitiesFolderPath, "utilities-cs");
+
         static void Main(string[] args) {
             //* Checking if program is run as sudo
             if (RootChecker.IsRoot()) {
@@ -44,7 +45,7 @@ Please try again without root permissions (sudo).");
             buildClonedProject.WaitForExit();
             Console.WriteLine("\nBuilt the project.");
 
-            //?Move the obtained executable to the root utilities-cs folder
+            //? Move the obtained executable to the root utilities-cs folder
             File.Move(
                 Path.Combine(
                     UtilitiesFolderPath,
