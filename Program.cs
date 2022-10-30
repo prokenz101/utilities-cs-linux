@@ -14,7 +14,9 @@ Please try again without root permissions (sudo).");
                 return;
             }
 
-            Directory.CreateDirectory(Path.Combine(UtilitiesFolderPath, "Assets")); //* Creating folders
+            if (!Directory.Exists(Path.Combine(UtilitiesFolderPath, "Assets"))) {
+                Directory.CreateDirectory(Path.Combine(UtilitiesFolderPath, "Assets")); //* Creating folders
+            }
 
             //! Getting the icon and putting it in the Assets folder
             var httpClient = new HttpClient();
