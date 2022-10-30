@@ -37,6 +37,12 @@ Please try again without root permissions (sudo).");
             cloneMainProcess.WaitForExit();
             Console.WriteLine("\nCloned the repository.\n");
 
+            //? Move the socket-handling python file into the utilities-cs folder
+            File.Move(
+                Path.Combine(Path.Combine(UtilitiesFolderPath, "utilities-cs-linux"), "sockets.py"),
+                Path.Combine(UtilitiesFolderPath, "sockets.py"), overwrite: true
+            );
+
             //? Building the cloned project into an executable
             var buildClonedProject = new System.Diagnostics.Process();
             buildClonedProject.StartInfo.FileName = "dotnet";
