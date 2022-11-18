@@ -31,6 +31,9 @@ class SocketJSON:
 
             case "notification":
                 notification(*self.args)
+                if Settings.dict["PressEscape"]:
+                    with controller.pressed(keyboard.Key.esc):
+                        pass
             
             case _:
                 print("not regular or notification")
