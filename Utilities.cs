@@ -17,6 +17,7 @@ namespace utilities_cs_linux {
         /// </summary>
         /// <param name="args">Command-line arguments.</param>
         static void Main(string[] args) {
+            RegisterCommands.RegisterAllRCommands();
             RegisterCommands.RegisterAllFCommands();
             SettingsModification.CreateJson();
 
