@@ -22,7 +22,7 @@ namespace utilities_cs_linux {
         /// <summary>
         /// A dictionary of command names to methods (For RegularCommands).
         /// </summary>
-        public static Dictionary<string, Action<string[]>> RCommands = new();
+        public static Dictionary<string, Func<string[], string>> RCommands = new();
         /// <summary>
         /// Executes a command in either the RCommands dictionary or the FCommands dictionary.
         /// </summary>
@@ -36,16 +36,18 @@ namespace utilities_cs_linux {
 
             if (FCommands.ContainsKey(cmd)) {
                 string? output = FCommands[cmd].Invoke(args, copy, notif);
-                if (output != null) { return output; } else { return null; }
+                return output != null ? output : null;
             } else if (RCommands.ContainsKey(cmd)) {
-                RCommands[cmd].Invoke(args);
-                return null;
+                string? output = RCommands[cmd].Invoke(args);
+                return output != null ? output : null;
             // } else if (Force.AreAnyForced()) {
             //     args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
             //     string? output = Force.forced!.Function!.Invoke(args, copy, notif);
             //     if (output != null) { return output; } else { return null; }
             } else {
-                return SocketJSON.SendJSON("notification", new List<object>() { "something went wrong idk", "troled" });
+                return SocketJSON.SendJSON(
+                    "notification", new List<object>() { "Command not found.", "Try again." }
+                );
             }
         }
 
@@ -195,9 +197,9 @@ namespace utilities_cs_linux {
         /// <param name="copy">Controls whether the function is willing to copy text to the clipboard.</param>
         /// <param name="notif">Controls whether the function is willing to send a notification.</param>
         /// <returns>The output of the method that is ran. Value can be null.</returns>
-        public static string? FindAndExecute(string cmd, string[] args, bool copy, bool notif) {
-            if (FCommands.ContainsKey(cmd)) {
-                string? output = FCommands[cmd].Invoke(args, copy, notif);
+        public static string? FindAndInvoke(string[] args, bool copy, bool notif) {
+            if (FCommands.ContainsKey(args[0])) {
+                string? output = FCommands[args[0]].Invoke(args, copy, notif);
                 if (output != null) { return output; } else { return null; }
             } else {
                 return null;
@@ -268,7 +270,7 @@ namespace utilities_cs_linux {
     /// The class that supports regular commands.
     /// </summary>
     public class RegularCommand : Command {
-        public Action<string[]>? Function;
+        public Func<string[], string>? Function;
         public static List<RegularCommand> RegularCommands = new();
         /// <summary>
         /// Initializes a new instance of a RegularCommand.
@@ -276,7 +278,7 @@ namespace utilities_cs_linux {
         /// <param name="commandName">The name of the regular command.</param>
         /// <param name="function">The function to be run.</param>
         /// <param name="aliases">The aliases for the command.</param>
-        public RegularCommand(string commandName, Action<string[]> function, string[]? aliases = null) {
+        public RegularCommand(string commandName, Func<string[], string> function, string[]? aliases = null) {
             //* setting all attributes for instance
             CommandName = commandName.ToLower(); Function = function; Aliases = aliases;
             if (aliases != null) {
@@ -295,7 +297,7 @@ namespace utilities_cs_linux {
         /// <returns>A string with every RegularCommand, seperated by newlines.</returns>
         public static string ListAllRCommands() {
             List<string> rCommandsList = new();
-            foreach (KeyValuePair<string, Action<string[]>> i in Command.RCommands) {
+            foreach (KeyValuePair<string, Func<string[], string>> i in Command.RCommands) {
                 rCommandsList.Add(i.Key);
             }
 
@@ -330,14 +332,23 @@ namespace utilities_cs_linux {
     }
 
     public class RegisterCommands {
+        public static void RegisterAllRCommands() {
+            RegularCommand format = new(
+                "format",
+                Format.FormatMain
+            );
+        }
+
         public static void RegisterAllFCommands() {
             FormattableCommand cursive = new(
                 commandName: "cursive",
                 function: (string[] args, bool copy, bool notif) => {
-                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.CursiveDict);
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
 
-                    return SocketJSON.SendJSON(
-                        "regular", new List<object>() {result, "Success!", "Message copied to clipboard."}
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.CursiveDict);
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() {result, "Success!", "Message copied to clipboard."}
                     );
                 }
             );
@@ -345,14 +356,17 @@ namespace utilities_cs_linux {
             FormattableCommand factorial = new(
                 commandName: "factorial",
                 function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
                     try {
                         System.Numerics.BigInteger n = System.Numerics.BigInteger.Parse(args[1]);
                         System.Numerics.BigInteger i = 1;
                         System.Numerics.BigInteger v = 1;
                         while (i <= n) { v *= i; i += 1; }
 
-                        return SocketJSON.SendJSON(
-                            "regular", new List<object>() { v.ToString(), "Success!", "Message copied to clipboard." }
+                        return Utils.CopyNotifCheck(
+                            copy, notif, new List<object>() { v.ToString(), "Success!", "Message copied to clipboard." }
                         );
                     } catch {
                         return SocketJSON.SendJSON(
