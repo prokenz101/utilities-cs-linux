@@ -56,7 +56,7 @@ def notification(
             )
         else:
             system(
-                f'notify-send --hint int:transient:1 -i {icon_path} "{"Sucess"}" "{"Too Long to show"}"'
+                f'notify-send --hint int:transient:1 -i {icon_path} "{"Check your clipboard."}" "{"This notification was too long."}"'
             )
 
     elif icon_path_override:
