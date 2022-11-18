@@ -7,23 +7,19 @@ namespace utilities_cs_linux {
     class Program {
         public static string UtilitiesFolderPath = Path.Combine("/home", $"{System.Environment.UserName}/utilities-cs");
         public static string IconPath = Path.Combine(UtilitiesFolderPath, "Assets/UtilitiesIcon.png");
-        public static string PythonSockets = "Dependencies/sockets.py"; //TODO Path.Combine(UtilitiesFolderPath, "sockets.py");
-        public static string SettingsJSONPath = "settings.json";
+        public static string PythonSockets = "PythonDependencies/sockets.py"; //TODO Path.Combine(UtilitiesFolderPath, "sockets.py");
+        public static string SettingsJSONPath = Path.Combine(UtilitiesFolderPath, "settings.json");
         public static SettingsJSON CurrentSettings = SettingsModification.GetSettings();
-        public static Uri LocalHost = new Uri("ws://127.0.0.1:1234");
-        public static Dictionary<string, Func<string, string>> CommandsDict = new() {
-            {"cursive", Commands.Cursive},
-            {"doublestruck", Commands.Doublestruck},
-            {"creepy", Commands.Creepy},
-            {"factorial", Commands.Factorial}
-        };
+        public static Uri LocalHost = new Uri("ws://127.0.0.1:8005");
 
         /// <summary>
         /// The entry-point of the application.
         /// </summary>
         /// <param name="args">Command-line arguments.</param>
         static void Main(string[] args) {
-            var settings = SettingsModification.GetSettings();
+            RegisterCommands.RegisterAllFCommands();
+            SettingsModification.CreateJson();
+
             var pythonProcess = new ProcessStartInfo(
                 "python3",
                 PythonSockets
@@ -47,24 +43,26 @@ namespace utilities_cs_linux {
 
             byte[] buffer = new byte[1024]; //* buffer
             int i; //* this will be the length of the byte array read from the stream
+            NetworkStream stream = new NetworkStream(client);
 
-            using (NetworkStream stream = new NetworkStream(client)) {
-                while (true) {
-                    string data = "";
-                    i = await stream.ReadAsync(buffer, 0, buffer.Length);
+            while (true) {
+                string data = "";
+                i = await stream.ReadAsync(buffer, 0, buffer.Length);
+                // System.Console.WriteLine("read something");
 
-                    data = Encoding.UTF8.GetString(buffer, 0, i);
-                    buffer = new byte[1024]; //* flushing buffer
+                data = Encoding.UTF8.GetString(buffer, 0, i);
+                buffer = new byte[1024]; //* flushing buffer
 
-                    if (data != "") {
-                        Console.WriteLine($"C#: Received {data}");
+                if (data != "") {
+                    Console.WriteLine($"C#: Received {data}");
 
-                        string result = InvokeCommand(data.Split(" ")).Result;
+                    string? result = InvokeCommand(data.Split(" ")).Result;
+                    if (result != null) {
                         byte[] msg = Encoding.UTF8.GetBytes(result);
-                        if (msg.Length > 1024) { msg = msg[0..1023]; }
+                        // if (msg.Length > 1024) { msg = msg[0..1023]; }
 
                         Console.WriteLine("Completed Command");
-                        Console.WriteLine($"Result: {result}");
+                        // Console.WriteLine($"Result: {result}");
 
                         await stream.WriteAsync(msg, 0, msg.Length);
                     }
@@ -72,25 +70,8 @@ namespace utilities_cs_linux {
             }
         }
 
-        static async Task<string> InvokeCommand(string[] input) {
-            string command = input[0];
-            if (CommandsDict.ContainsKey(command)) {
-                var commandFunc = CommandsDict[command];
-                return await Task.Run(() => commandFunc.Invoke(string.Join(" ", input[1..])));
-            }
-
-            return "Error";
-        }
-    }
-
-    public class SocketJSON {
-        public SocketType Type { get; set; }
-        public object[]? ArgumentList { get; set; }
-
-        public enum SocketType {
-            Command,
-            Notification,
-            Copy
+        static async Task<string?> InvokeCommand(string[] input) {
+            return await Task.Run(() => Command.ExecuteCommand(input, true, true));
         }
     }
 }

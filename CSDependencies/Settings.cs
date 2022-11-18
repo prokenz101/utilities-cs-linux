@@ -17,7 +17,6 @@ namespace utilities_cs_linux {
                 return settings;
             } catch {
                 CreateJson();
-                Thread.Sleep(250);
                 return GetSettings();
             }
         }
