@@ -38,6 +38,17 @@ namespace utilities_cs_linux {
                 );
             }
         }
+
+        /// <summary>
+        /// Checks if the command is willing to copy and send a notification.
+        /// </summary>
+        /// <param name="copy">Bool which denotes whether the command is willing to copy something to the clipboard.</param>
+        /// <param name="notif">Bool which denotes whether the command is willing to send a notification.</param>
+        /// <param name="args">The arguments for the SocketJSON</param>
+        /// <returns>The SocketJSON based on what the command's requirements are.</returns>
+        public static string? CopyNotifCheck(bool copy, bool notif, List<object> args) {
+            return copy && notif ? SocketJSON.SendJSON("regular", args) : args[0].ToString();
+        }
     }
 
     public class SocketJSON {
