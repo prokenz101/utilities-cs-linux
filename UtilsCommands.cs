@@ -364,6 +364,14 @@ namespace utilities_cs_linux {
                     return Utils.CopyNotifCheck(
                         copy, notif, new List<object>() {result, "Success!", "Message copied to clipboard."}
                     );
+            FormattableCommand base32 = new(
+                commandName: "base32",
+                function: Base32Convert.Base32ConvertMain,
+                aliases: new string[] { "b32" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
+            );
+
                 },
                 useInAllCommand: true,
                 allCommandMode: "fancy"
