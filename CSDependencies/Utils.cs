@@ -49,6 +49,25 @@ namespace utilities_cs_linux {
         public static string? CopyNotifCheck(bool copy, bool notif, List<object> args) {
             return copy && notif ? SocketJSON.SendJSON("regular", args) : args[0].ToString();
         }
+
+        /// <summary>
+        /// Replaces any characters in "chars" with their respective characters in "replacementChars".
+        /// </summary>
+        /// <param name="text">The text to be replaced.</param>
+        /// <param name="chars">The original characters to be replaced. (Split by " ")</param>
+        /// <param name="replacementChars">The characters to replace the original characters. (Split by " ")</param>
+        /// <returns></returns>
+        public static string BulkReplace(string text, string chars, string replacementChars) {
+            List<string> charsList = chars.Split(" ").ToList<string>();
+            List<string> replacementCharsList = replacementChars.Split(" ").ToList<string>();
+            string result = text;
+
+            foreach (string i in charsList) {
+                result = result.Replace(i, replacementCharsList[charsList.IndexOf(i)]);
+            }
+
+            return result;
+        }
     }
 
     public class SocketJSON {
