@@ -474,6 +474,14 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "isb64" }
             );
 
+            FormattableCommand base85 = new(
+                commandName: "base85",
+                function: Ascii85.Base85Main,
+                aliases: new string[] { "ascii85", "b85" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
+            );
+
                     return Utils.CopyNotifCheck(
                         copy, notif, new List<object>() { result, "Success!", "Message copied to clipboard." }
                     );
