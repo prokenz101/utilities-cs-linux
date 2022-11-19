@@ -353,9 +353,7 @@ namespace utilities_cs_linux {
                 commandName: "all",
                 function: All.AllMain
             );
-            
-            FormattableCommand cursive = new(
-                commandName: "cursive",
+
                 function: (string[] args, bool copy, bool notif) => {
                     string indexTest = Utils.IndexTest(args);
                     if (indexTest != "false") { return indexTest; }
@@ -415,6 +413,21 @@ namespace utilities_cs_linux {
                     }
                 }
             );
+            FormattableCommand cursive = new(
+                commandName: "cursive",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.CursiveDict);
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() {result, "Success!", "Message copied to clipboard."}
+                    );
+                },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
         }
     }
 }
