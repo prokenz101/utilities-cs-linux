@@ -343,8 +343,8 @@ namespace utilities_cs_linux {
             );
 
             RegularCommand format = new(
-                "format",
-                Format.FormatMain
+                commandName: "format",
+                function: Format.FormatMain
             );
         }
 
