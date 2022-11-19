@@ -1,6 +1,6 @@
 namespace utilities_cs_linux {
-    public class SettingsModification {
-        public static SettingsJSON DefaultSettings = new SettingsJSON {
+    public class Settings {
+        public static Settings DefaultSettings = new Settings {
             DisableNotifications = false,
             PermutationsCalculationLimit = 6,
             EscapeBase85OutputText = true,
@@ -10,10 +10,10 @@ namespace utilities_cs_linux {
             AllCommandHideNames = false
         };
 
-        public static SettingsJSON GetSettings() {
+        public static Settings GetSettings() {
             try {
                 string jsonString = File.ReadAllText(Program.SettingsJSONPath);
-                SettingsJSON settings = System.Text.Json.JsonSerializer.Deserialize<SettingsJSON>(jsonString)!;
+                Settings settings = System.Text.Json.JsonSerializer.Deserialize<Settings>(jsonString)!;
                 return settings;
             } catch {
                 CreateJson();
@@ -22,16 +22,14 @@ namespace utilities_cs_linux {
         }
 
         public static void CreateJson() {
-            string jsonString = System.Text.Json.JsonSerializer.Serialize<SettingsJSON>(DefaultSettings);
+            string jsonString = System.Text.Json.JsonSerializer.Serialize<Settings>(DefaultSettings);
             File.WriteAllText(Program.SettingsJSONPath, jsonString);
         }
 
         public static bool SettingsJsonExists() {
             return File.Exists(Program.SettingsJSONPath);
         }
-    }
     
-    public class SettingsJSON {
         public bool DisableNotifications { get; set; }
         public int PermutationsCalculationLimit { get; set; }
         public bool EscapeBase85OutputText { get; set; }
@@ -39,5 +37,6 @@ namespace utilities_cs_linux {
         public bool AutoPaste { get; set; }
         public bool PressEscape { get; set; }
         public bool AllCommandHideNames { get; set; }
+
     }
 }

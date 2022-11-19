@@ -9,7 +9,7 @@ namespace utilities_cs_linux {
         public static string IconPath = Path.Combine(UtilitiesFolderPath, "Assets/UtilitiesIcon.png");
         public static string PythonSockets = "PythonDependencies/sockets.py"; //TODO Path.Combine(UtilitiesFolderPath, "sockets.py");
         public static string SettingsJSONPath = Path.Combine(UtilitiesFolderPath, "settings.json");
-        public static SettingsJSON CurrentSettings = SettingsModification.GetSettings();
+        public static Settings CurrentSettings = Settings.GetSettings();
         public static Uri LocalHost = new Uri("ws://127.0.0.1:8005");
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace utilities_cs_linux {
         static void Main(string[] args) {
             RegisterCommands.RegisterAllRCommands();
             RegisterCommands.RegisterAllFCommands();
-            SettingsModification.CreateJson();
+            Settings.CreateJson();
 
             var pythonProcess = new ProcessStartInfo(
                 "python3",
