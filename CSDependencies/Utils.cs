@@ -55,6 +55,12 @@ namespace utilities_cs_linux {
         public string? Request { get; set; }
         public List<object>? Arguments { get; set; }
 
+        /// <summary>
+        /// Returns a JSON string which follows a format that Python understands.
+        /// </summary>
+        /// <param name="request">The type of request, "regular" or "notification".</param>
+        /// <param name="arguments">Arguments for the request that python can read.</param>
+        /// <returns>A JSON string based on the request and parameters.</returns>
         public static string SendJSON(string request, List<object> arguments) {
             return System.Text.Json.JsonSerializer.Serialize<SocketJSON>(
                 new SocketJSON() { Request = request, Arguments = arguments }
