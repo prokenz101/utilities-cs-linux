@@ -445,8 +445,6 @@ namespace utilities_cs_linux {
                 allCommandMode: "encodings"
             );
 
-            FormattableCommand mathitalic = new(
-                commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
                     string indexTest = Utils.IndexTest(args);
                     if (indexTest != "false") { return indexTest; }
@@ -498,6 +496,21 @@ namespace utilities_cs_linux {
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand mathitalic = new(
+                commandName: "mathitalic",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.MathItalicDict);
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() { result, "Success!", "Message copied to clipboard." }
+                    );
+                },
+                aliases: new string[] { "mai" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
         }
     }
 }
