@@ -333,6 +333,15 @@ namespace utilities_cs_linux {
 
     public class RegisterCommands {
         public static void RegisterAllRCommands() {
+            RegularCommand exit = new(
+                commandName: "exit",
+                function: (string[] args) => {
+                    Program.ContinueExecution = false;
+                    return SocketJSON.SendJSON("command", new List<object>() { "exit" });
+                },
+                aliases: new string[] { "quit" }
+            );
+
             RegularCommand format = new(
                 "format",
                 Format.FormatMain
