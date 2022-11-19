@@ -512,11 +512,18 @@ namespace utilities_cs_linux {
                 }
             );
 
+            FormattableCommand bubbletext = new(
+                commandName: "bubbletext",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.BubbleDict);
                     return Utils.CopyNotifCheck(
                         copy, notif, new List<object>() { result, "Success!", "Message copied to clipboard." }
                     );
                 },
-                aliases: new string[] { "mai" },
+                aliases: new string[] { "bubble" },
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
@@ -543,6 +550,7 @@ namespace utilities_cs_linux {
                     }
                 }
             );
+            
             FormattableCommand cursive = new(
                 commandName: "cursive",
                 function: (string[] args, bool copy, bool notif) => {
