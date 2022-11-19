@@ -445,11 +445,35 @@ namespace utilities_cs_linux {
                 allCommandMode: "encodings"
             );
 
+            FormattableCommand isBase64 = new(
+                commandName: "isbase64",
                 function: (string[] args, bool copy, bool notif) => {
                     string indexTest = Utils.IndexTest(args);
                     if (indexTest != "false") { return indexTest; }
 
-                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.MathItalicDict);
+                    string text = string.Join(" ", args[1..]);
+
+                    Func<string, bool> isBase64 = (string s) => {
+                        s = s.Trim();
+                        bool isB64 = (s.Length % 4 == 0) && System.Text.RegularExpressions.Regex.IsMatch(
+                            s, @"^[a-zA-Z0-9\+/]*={0,3}$",
+                            System.Text.RegularExpressions.RegexOptions.None
+                        ); return isB64;
+                    };
+
+                    if (isBase64(text)) {
+                        return Utils.CopyNotifCheck(
+                            copy, notif, new List<object>() { "True", "Yes.", "The string is Base64." }
+                        );
+                    } else {
+                        return Utils.CopyNotifCheck(
+                            copy, notif, new List<object>() { "False", "No.", "The string is not Base64." }
+                        );
+                    }
+                },
+                aliases: new string[] { "isb64" }
+            );
+
                     return Utils.CopyNotifCheck(
                         copy, notif, new List<object>() { result, "Success!", "Message copied to clipboard." }
                     );
