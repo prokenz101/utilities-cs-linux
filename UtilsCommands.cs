@@ -407,9 +407,42 @@ namespace utilities_cs_linux {
                 allCommandMode: "encodings"
             );
 
+            FormattableCommand base64 = new(
+                commandName: "base64",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    Func<string, bool> isBase64 = (string s) => {
+                        s = s.Trim();
+                        bool isB64 = (s.Length % 4 == 0) && System.Text.RegularExpressions.Regex.IsMatch(
+                            s, @"^[a-zA-Z0-9\+/]*={0,3}$",
+                            System.Text.RegularExpressions.RegexOptions.None
+                        ); return isB64;
+                    };
+
+                    string text = string.Join(" ", args[1..]);
+                    if (isBase64(text)) {
+                        try {
+                            string ans = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(text));
+                            return Utils.CopyNotifCheck(
+                                copy, notif, new List<object>() { ans, "Success!", $"Check your clipboard." }
+                            );
+                        } catch {
+                            return SocketJSON.SendJSON(
+                                "notification", new List<object>() { "Something went wrong.", "An exception occured." }
+                            );
+                        }
+                    } else {
+                        string ans = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(text));
+                        return Utils.CopyNotifCheck(
+                            copy, notif, new List<object>() { ans, "Success!", "Check your clipboard." }
+                        );
+                    }
                 },
+                aliases: new string[] { "b64" },
                 useInAllCommand: true,
-                allCommandMode: "fancy"
+                allCommandMode: "encodings"
             );
 
             FormattableCommand mathitalic = new(
