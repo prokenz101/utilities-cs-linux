@@ -497,6 +497,21 @@ namespace utilities_cs_linux {
                 }
             );
 
+            FormattableCommand urldecode = new(
+                commandName: "urldecode",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    string url = System.Web.HttpUtility.UrlDecode(text);
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() { url, "Success!", "Check your clipboard." }
+                    );
+                }
+            );
+
                     return Utils.CopyNotifCheck(
                         copy, notif, new List<object>() { result, "Success!", "Message copied to clipboard." }
                     );
