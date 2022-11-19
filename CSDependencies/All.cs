@@ -11,36 +11,28 @@ namespace utilities_cs_linux {
                     copy, notif, new List<object>() { all, "Success!", "Text copied to clipboard." }
                 );
             } else {
-                return SocketJSON.SendJSON("notification", new List<object>() {  });
+                return SocketJSON.SendJSON("notification", new List<object>() { });
             }
         }
 
         static string? returnCategory(string[] args, string category, bool copy, bool notif) {
-            bool shouldShowNames = Program.CurrentSettings.AllCommandHideNames;
+            bool shouldShowNames = !Program.CurrentSettings.AllCommandHideNames;
 
-            var buildCommandDictionary = (List<FormattableCommand> commands) => (
-                    from command in commands
-                    select new Tuple<string, Func<string[], bool, bool, string>>(
-                        command.CommandName!,
-                        command.Function!
-                )
-            ).ToDictionary(t => t.Item1, t => t.Item2);
+            List<FormattableCommand> fancy =
+                FormattableCommand.GetMethodsSupportedByAll("fancy");
 
-            Dictionary<string, Func<string[], bool, bool, string?>> fancy =
-                buildCommandDictionary(FormattableCommand.GetMethodsSupportedByAll("fancy"));
-
-            Dictionary<string, Func<string[], bool, bool, string?>> encodings =
-                buildCommandDictionary(FormattableCommand.GetMethodsSupportedByAll("encodings"));
+            List<FormattableCommand> encodings =
+                FormattableCommand.GetMethodsSupportedByAll("encodings");
 
             List<string> converted = new();
-            Action<Dictionary<string, Func<string[], bool, bool, string?>>> allCommandRun =
-                (Dictionary<string, Func<string[], bool, bool, string?>> dict) => {
-                    foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> kvp in dict) {
+            Action<List<FormattableCommand>> allCommandRun =
+                (List<FormattableCommand> commandList) => {
+                    foreach (FormattableCommand command in commandList) {
                         try {
-                            string? output = kvp.Value.Invoke(args, false, false);
+                            string? output = command.Function!.Invoke(args, false, false);
                             if (output != null) {
-                                if (!shouldShowNames) {
-                                    converted.Add($"{kvp.Key}: {output}");
+                                if (shouldShowNames) {
+                                    converted.Add($"{command.CommandName}: {output}");
                                 } else { converted.Add(output!); }
                             }
                         } catch { }
@@ -49,9 +41,7 @@ namespace utilities_cs_linux {
 
             switch (category) {
                 case "everything":
-                    allCommandRun(
-                        fancy.Concat(encodings).ToDictionary(kvp => kvp.Key, kvp => kvp.Value)
-                    );
+                    allCommandRun(fancy.Concat(encodings).ToList());
                     break;
 
                 case "encodings":
@@ -59,16 +49,7 @@ namespace utilities_cs_linux {
                     break;
 
                 case "fancy":
-                    foreach (KeyValuePair<string, Func<string[], bool, bool, string?>> kvp in fancy) {
-                        try {
-                            string? output = kvp.Value.Invoke(args, false, false);
-                            if (output != null) {
-                                if (!shouldShowNames) {
-                                    converted.Add($@"{kvp.Key}: {output}");
-                                } else { converted.Add(output); }
-                            }
-                        } catch { }
-                    }
+                    allCommandRun(fancy);
                     break;
 
                 default:
