@@ -354,14 +354,51 @@ namespace utilities_cs_linux {
                 function: All.AllMain
             );
 
+            FormattableCommand getAliases = new(
+                commandName: "aliases",
                 function: (string[] args, bool copy, bool notif) => {
                     string indexTest = Utils.IndexTest(args);
                     if (indexTest != "false") { return indexTest; }
 
-                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.CursiveDict);
-                    return Utils.CopyNotifCheck(
-                        copy, notif, new List<object>() {result, "Success!", "Message copied to clipboard."}
+                    string cmd = args[1];
+                    List<string>? aliases = Command.GetAliases(cmd);
+
+                    if (aliases != null) {
+                        string aliasesString = string.Join(", ", aliases);
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif, new List<object>() {
+                                aliasesString, "Success!", "Check your clipboard."
+                            }
+                        );
+                    } else {
+                        return SocketJSON.SendJSON(
+                            "notification", new List<object>() { "No aliases found.", "Could not find any." }
+                        );
+                    }
+                },
+                aliases: new string[] { "getaliases", "getalias", "get-alias", "get-aliases" }
+            );
+
+            FormattableCommand escape = new(
+                commandName: "escape",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    string ans = Utils.BulkReplace(
+                        text,
+                        "! @ # $ % ^ & * ( ) _ + , . / ; ' [ ] < > ? : \" { } ` ~ \\",
+                        "\\" + string.Join(" \\", "! @ # $ % ^ & * ( ) _ + , . / ; ' [ ] < > ? : \" { } ` ~ \\".Split(" "))
                     );
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() { ans, "Success!", "Message copied to clipboard." }
+                    );
+                }
+            );
+
             FormattableCommand base32 = new(
                 commandName: "base32",
                 function: Base32Convert.Base32ConvertMain,
