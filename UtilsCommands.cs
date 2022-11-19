@@ -340,6 +340,11 @@ namespace utilities_cs_linux {
         }
 
         public static void RegisterAllFCommands() {
+            FormattableCommand all = new(
+                commandName: "all",
+                function: All.AllMain
+            );
+            
             FormattableCommand cursive = new(
                 commandName: "cursive",
                 function: (string[] args, bool copy, bool notif) => {
