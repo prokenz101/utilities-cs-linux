@@ -566,6 +566,22 @@ namespace utilities_cs_linux {
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand doublestruck = new(
+                commandName: "doublestruck",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.DoublestruckDict);
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() { result, "Success!", "Message copied to clipboard." }
+                    );
+                },
+                aliases: new string[] { "dbs" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
