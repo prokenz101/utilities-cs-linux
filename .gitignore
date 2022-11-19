@@ -2,3 +2,4 @@ obj
 bin
 .vscode
 build.ps1
+.python-version
