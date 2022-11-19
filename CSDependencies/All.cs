@@ -11,7 +11,9 @@ namespace utilities_cs_linux {
                     copy, notif, new List<object>() { all, "Success!", "Text copied to clipboard." }
                 );
             } else {
-                return SocketJSON.SendJSON("notification", new List<object>() { });
+                return SocketJSON.SendJSON(
+                    "notification", new List<object>() { "Something went wrong.", "Invaid category." }
+                );
             }
         }
 
