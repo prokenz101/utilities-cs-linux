@@ -355,7 +355,11 @@ namespace utilities_cs_linux {
                     return Utils.CopyNotifCheck(
                         copy, notif, new List<object>() {result, "Success!", "Message copied to clipboard."}
                     );
-                }
+                },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
@@ -368,6 +372,8 @@ namespace utilities_cs_linux {
                     );
                 },
                 aliases: new string[] { "mai" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
             );
 
             FormattableCommand factorial = new(
