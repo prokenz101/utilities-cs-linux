@@ -613,6 +613,25 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "cms" }
             );
 
+            FormattableCommand copypaste = new(
+                commandName: "copypaste",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+
+                    return Dictionaries.CopypasteDict.ContainsKey(text) ? Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() {
+                            Dictionaries.CopypasteDict[text], "Success!", "Message copied to clipboard."
+                        }
+                    ) : SocketJSON.SendJSON(
+                        "notification", new List<object>() { "Something went wrong.", "Prompt not found." }
+                    );
+                },
+                aliases: new string[] { "cp" }
+            );
+
             FormattableCommand factorial = new(
                 commandName: "factorial",
                 function: (string[] args, bool copy, bool notif) => {
