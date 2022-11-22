@@ -1033,6 +1033,36 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "loremipsum" }
             );
 
+            FormattableCommand flip = new(
+                commandName: "flip",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<string> converted = new();
+
+                    foreach (char f in text) {
+                        var replaced = Dictionaries.FlipDict.GetValueOrDefault(f.ToString(), "");
+                        if (replaced != "") {
+                            converted.Add(replaced!);
+                        } else {
+                            converted.Add(f.ToString());
+                        }
+                    }
+
+                    converted.Reverse();
+                    var answer = string.Join("", converted);
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() { answer, "Success!", "Message copied to clipboard." }
+                    );
+                },
+                aliases: new string[] { "flipped", "upside-down" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
