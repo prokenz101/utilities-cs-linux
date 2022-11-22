@@ -632,6 +632,23 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "cp" }
             );
 
+            FormattableCommand creepy = new(
+                commandName: "creepy",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() {
+                            Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.CreepyDict),
+                            "Success!", "Message copied to clipboard."
+                        }
+                    );
+                },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
             FormattableCommand factorial = new(
                 commandName: "factorial",
                 function: (string[] args, bool copy, bool notif) => {
