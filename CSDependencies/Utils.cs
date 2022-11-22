@@ -51,6 +51,79 @@ namespace utilities_cs_linux {
         }
 
         /// <summary>
+        /// A method that returns a rounded-version of a number if it is close enough to a whole number.
+        /// 5.999999998 -> 6, 5.5 = 5.5.
+        /// </summary>
+        /// <param name="num">The number to be rounded off to, or not.</param>
+        /// <returns>
+        /// A double based on if the number was rounded or not.
+        /// If the number was not rounded off, it returns the same number.s
+        /// </returns>
+        public static double RoundIfNumberIsNearEnough(double num) {
+            System.Text.RegularExpressions.Regex re = new(@"-?\d+\.(?:9){6,}");
+
+            if (re.Matches(num.ToString()).Count == 1) {
+                return Math.Round(num);
+            } else {
+                return num;
+            }
+        }
+
+        /// <summary>
+        /// Checks if a string has only a certain set of characters.
+        /// </summary>
+        /// <param name="allowableChar">Set of characters that are allowed in the string.</param>
+        /// <param name="text">The text that is being checked.</param>
+        /// <returns>A bool that will be true if the text matches the format and false if it doesn't.</returns>
+        public static bool FormatValid(string allowableChar, string text) {
+            foreach (char c in text) {
+                if (!allowableChar.Contains(c.ToString()))
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Uses Regex to search through a string using an expression.
+        /// Returns a List of DIctionaries where the Match is the key and a GroupCollection of that match is the value.
+        /// </summary>
+        /// <param name="input">The string that is to be searched.</param>
+        /// <param name="expression">The regex expression used to search through the input.</param>
+        /// <param name="useIsMatch">
+        /// If true, the function will use re.IsMatch() instead of re.Matches().Count,
+        /// this should only be used for expressions which are designed to have only one match.
+        /// </param>
+        /// <returns>A dictionary of all the matches which point to their groups.</returns>
+        public static Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>? RegexFind(
+            string input,
+            string expression,
+            bool useIsMatch = false,
+            Action? ifNotMatch = null
+        ) {
+
+            List<Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection>> matchesAndGroups = new();
+            System.Text.RegularExpressions.Regex re = new(expression);
+
+            Action matched = () => {
+                foreach (System.Text.RegularExpressions.Match? match in re.Matches(input)) {
+                    if (match != null) {
+                        Dictionary<System.Text.RegularExpressions.Match, System.Text.RegularExpressions.GroupCollection> matchToGroups =
+                            new() { { match, match.Groups } };
+                        matchesAndGroups.Add(matchToGroups);
+                    }
+                }
+            };
+
+            if (!useIsMatch) {
+                if (re.Matches(input).Count >= 1) { matched.Invoke(); } else { ifNotMatch?.Invoke(); return null; }
+            } else if (useIsMatch) {
+                if (re.IsMatch(input)) { matched.Invoke(); } else { ifNotMatch?.Invoke(); return null; }
+            }
+
+            return matchesAndGroups[0];
+        }
+
+        /// <summary>
         /// Replaces any characters in "chars" with their respective characters in "replacementChars".
         /// </summary>
         /// <param name="text">The text to be replaced.</param>
