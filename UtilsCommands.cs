@@ -930,6 +930,28 @@ namespace utilities_cs_linux {
                 }
             );
 
+            FormattableCommand leet = new(
+                commandName: "leet",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    Dictionary<string, string> leetChar = new() {
+                        { "E", "3" }, { "I", "1" }, { "O", "0" }, { "A", "4" }, { "S", "5" }
+                    };
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() {
+                            Utils.TextFormatter(string.Join(" ", args[1..]).ToUpper(), leetChar),
+                            "Success!", "Message copied to clipboard."
+                        }
+                    );
+                },
+                aliases: new string[] { "numberize", "numberise" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
