@@ -687,6 +687,25 @@ namespace utilities_cs_linux {
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand subscript = new(
+                commandName: "subscript",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() {
+                            Utils.TextFormatter(string.Join(" ", args[1..]).ToLower(), Dictionaries.SubscriptDict),
+                            "Success!",
+                            "Message copied to clipboard."
+                        }
+                    );
+                },
+                aliases: new string[] { "sub" },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
             FormattableCommand factorial = new(
                 commandName: "factorial",
                 function: (string[] args, bool copy, bool notif) => {
