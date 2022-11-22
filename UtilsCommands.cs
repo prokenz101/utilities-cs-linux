@@ -512,6 +512,56 @@ namespace utilities_cs_linux {
                 }
             );
 
+            FormattableCommand binary = new(
+                commandName: "binary",
+                function: (string[] args, bool copy, bool notif) => {
+                    string text = string.Join(" ", args[1..]);
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    if (!Utils.FormatValid("01 ", text)) {
+                        byte[] ConvertToByteArray(string str, System.Text.Encoding encoding) {
+                            return encoding.GetBytes(str);
+                        }
+
+                        string ToBinary(Byte[] data) {
+                            return string.Join(
+                                " ",
+                                data.Select(
+                                    byt => Convert.ToString(byt, 2).PadLeft(8, '0')
+                                )
+                            );
+                        }
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif, new List<object> {
+                                ToBinary(ConvertToByteArray(text, System.Text.Encoding.ASCII)),
+                                "Success!", "Message copied to clipboard."
+                            }
+                        );
+
+                    } else {
+                        try {
+                            string[] textList = text.Split(" ");
+                            var chars = from split in textList select ((char)Convert.ToInt32(split, 2)).ToString();
+
+                            return Utils.CopyNotifCheck(
+                                copy, notif, new List<object>() {
+                                    string.Join("", chars), "Success!", "Check your clipboard."
+                                }
+                            );
+                        } catch {
+                            return SocketJSON.SendJSON(
+                                "notification", new List<object>() { "Something went wrong.", "An exception occured." }
+                            );
+                        }
+                    }
+                },
+                aliases: new string[] { "bin" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
+            );
+
             FormattableCommand bubbletext = new(
                 commandName: "bubbletext",
                 function: (string[] args, bool copy, bool notif) => {
