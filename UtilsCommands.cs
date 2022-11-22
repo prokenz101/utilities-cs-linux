@@ -836,6 +836,40 @@ namespace utilities_cs_linux {
                 }
             );
 
+            FormattableCommand cuberoot = new(
+                commandName: "cuberoot",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    
+                    //* Testing if inputted string is a number.
+                    try {
+                        Convert.ToDouble(text);
+                    } catch (FormatException) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check your syntax." }
+                        );
+                    }
+
+                    //* Removing the commas of inputted number.
+                    if (text.Contains(",")) { text = text.Replace(",", string.Empty); }
+
+                    double num = Convert.ToDouble(text);
+                    string result = Math.Pow(num, ((double)1 / 3)).ToString();
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() {
+                            Utils.RoundIfNumberIsNearEnough(Convert.ToDouble(result)).ToString(),
+                            "Success!", "Check your clipboard."
+                        }
+                    );
+                },
+                aliases: new string[] { "cbrt" }
+            );
+
             FormattableCommand cursive = new(
                 commandName: "cursive",
                 function: (string[] args, bool copy, bool notif) => {
