@@ -728,7 +728,58 @@ namespace utilities_cs_linux {
                     }
                 }
             );
-            
+
+            FormattableCommand raise = new(
+                commandName: "raise",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    bool cancel = false;
+
+                    var matchToGroups =
+                        Utils.RegexFind(
+                            text,
+                            @"(?<base>-?\d+\.\d+|-?\d+) to (?<power>-?\d+\.\d+|-?\d+)",
+                            useIsMatch: true,
+                            ifNotMatch: () => cancel = true
+                        );
+
+                    if (cancel) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check the syntax and parameters." }
+                        );
+                    }
+
+                    if (matchToGroups != null) {
+                        foreach (var kvp in matchToGroups) {
+                            System.Numerics.BigInteger result = 1;
+                            System.Numerics.BigInteger baseNum =
+                                System.Numerics.BigInteger.Parse(kvp.Key.Groups["base"].Value);
+
+                            System.Numerics.BigInteger powerNum =
+                                System.Numerics.BigInteger.Parse(kvp.Key.Groups["power"].Value);
+
+                            for (System.Numerics.BigInteger i = 0; i < powerNum; i += 1) { result *= baseNum; }
+
+                            return Utils.CopyNotifCheck(
+                                copy, notif, new List<object>() { result.ToString(), "Success!", "Check your clipboard." }
+                            );
+                        }
+                    } else {
+                        return SocketJSON.SendJSON(
+                            "notification", new List<object>() { "Something went wrong.", "Check your parameters." }
+                        );
+                    }
+
+                    return SocketJSON.SendJSON(
+                        "notification", new List<object>() { "Something went wrong.", "An exception occured." }
+                    );
+                }
+            );
+
             FormattableCommand cursive = new(
                 commandName: "cursive",
                 function: (string[] args, bool copy, bool notif) => {
