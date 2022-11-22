@@ -23,10 +23,11 @@ namespace utilities_cs_linux {
             RegisterCommands.RegisterAllFCommands();
             Settings.CreateJson();
 
-            var pythonProcess = new ProcessStartInfo(
+            ProcessStartInfo pythonProcess = new(
                 "python3",
                 PythonSockets
             ) { CreateNoWindow = true };
+
             Process.Start(pythonProcess);
             Console.WriteLine("Python started");
 

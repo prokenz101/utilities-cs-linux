@@ -40,10 +40,10 @@ namespace utilities_cs_linux {
             } else if (RCommands.ContainsKey(cmd)) {
                 string? output = RCommands[cmd].Invoke(args);
                 return output != null ? output : null;
-            // } else if (Force.AreAnyForced()) {
-            //     args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
-            //     string? output = Force.forced!.Function!.Invoke(args, copy, notif);
-            //     if (output != null) { return output; } else { return null; }
+                // } else if (Force.AreAnyForced()) {
+                //     args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
+                //     string? output = Force.forced!.Function!.Invoke(args, copy, notif);
+                //     if (output != null) { return output; } else { return null; }
             } else {
                 return SocketJSON.SendJSON(
                     "notification", new List<object>() { "Command not found.", "Try again." }
@@ -559,7 +559,7 @@ namespace utilities_cs_linux {
 
                     string result = Utils.TextFormatter(string.Join(" ", args[1..]), Dictionaries.CursiveDict);
                     return Utils.CopyNotifCheck(
-                        copy, notif, new List<object>() {result, "Success!", "Message copied to clipboard."}
+                        copy, notif, new List<object>() { result, "Success!", "Message copied to clipboard." }
                     );
                 },
                 useInAllCommand: true,
