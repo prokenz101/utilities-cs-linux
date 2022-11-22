@@ -780,6 +780,62 @@ namespace utilities_cs_linux {
                 }
             );
 
+            FormattableCommand root = new(
+                commandName: "root",
+                function: (string[] args, bool copy, bool notif) => {
+                    if (args[1] == "calc" | args[1] == "calculator") {
+                        string text = string.Join(" ", args[2..]);
+                        System.Text.RegularExpressions.Regex regex =
+                            new(@"(?<root>-?\d+\.\d+|-?\d+)(?:st|nd|rd|th) root of (?<num>-?\d+\.\d+|-?\d+)");
+
+                        if (regex.IsMatch(text)) {
+                            var match = regex.Match(text);
+                            try {
+                                double root = Convert.ToDouble(match.Groups["root"].Value);
+                                double num = Convert.ToDouble(match.Groups["num"].Value);
+                                double answer = Utils.RoundIfNumberIsNearEnough(Math.Pow(num, 1 / root));
+
+                                return Utils.CopyNotifCheck(
+                                    copy, notif, new List<object>() { answer.ToString(), "Success!", "Check your clipboard." }
+                                );
+                            } catch (OverflowException) {
+                                return SocketJSON.SendJSON(
+                                    "notification",
+                                    new List<object>() { "Overflow exception.", "Number may be too large." }
+                                );
+                            }
+                        } else {
+                            return SocketJSON.SendJSON(
+                                "notification",
+                                new List<object>() { "Something went wrong.", "Check the syntax and parameters." }
+                            );
+                        }
+                    } else if (args[1] == "get") {
+                        try {
+                            System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(args[2]);
+
+                            string? exp = exponent.Execute(new string[] { "exponent", num.ToString() }, false, false);
+                            string? toCopy = num == 2 ? "√" : exp != null ? $"{exp}√" : null;
+
+                            return toCopy != null ? Utils.CopyNotifCheck(
+                                copy, notif, new List<object>() { toCopy, "Success!", "Check your clipboard." }
+                            ) : SocketJSON.SendJSON(
+                                "notification", new List<object>() { "Something went wrong.", "You sure that was a number?" }
+                            );
+                        } catch (FormatException) {
+                            return SocketJSON.SendJSON(
+                                "notification",
+                                new List<object>() { "Something went wrong.", "You sure that was a number?" }
+                            );
+                        }
+                    } else {
+                        return SocketJSON.SendJSON(
+                            "notification", new List<object>() { "Something went wrong.", "Check your syntax." }
+                        );
+                    }
+                }
+            );
+
             FormattableCommand cursive = new(
                 commandName: "cursive",
                 function: (string[] args, bool copy, bool notif) => {
