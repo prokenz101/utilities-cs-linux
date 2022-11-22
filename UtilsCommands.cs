@@ -1027,6 +1027,12 @@ namespace utilities_cs_linux {
                 }
             );
 
+            FormattableCommand lorem = new(
+                commandName: "lorem",
+                function: LoremIpsum.LoremMain,
+                aliases: new string[] { "loremipsum" }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
