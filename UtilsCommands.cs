@@ -578,6 +578,41 @@ namespace utilities_cs_linux {
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand commaseperator = new(
+                commandName: "commaseperator",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string input = string.Join(" ", args[1..]);
+                    System.Text.RegularExpressions.Regex re = new(@"(?<num>-?\d+)(?:\.(?<decimals>\d+))?");
+
+                    if (re.IsMatch(input)) {
+                        System.Numerics.BigInteger num =
+                            System.Numerics.BigInteger.Parse(re.Match(input).Groups["num"].Value);
+
+                        System.Numerics.BigInteger decimals =
+                            re.Match(input).Groups["decimals"].Value != ""
+                                ? System.Numerics.BigInteger.Parse(re.Match(input).Groups["decimals"].Value)
+
+                            : 0;
+
+                        string result =
+                            decimals == 0 ? string.Format("{0:n0}", num)
+                            : string.Format("{0:n0}", num) + "." + decimals.ToString();
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif, new List<object>() { result, "Success!", "Message copied to clipboard." }
+                        );
+                    } else {
+                        return SocketJSON.SendJSON(
+                            "notification", new List<object>() { "Something went wrong.", "You sure that was a number?" }
+                        );
+                    }
+                },
+                aliases: new string[] { "cms" }
+            );
+
             FormattableCommand factorial = new(
                 commandName: "factorial",
                 function: (string[] args, bool copy, bool notif) => {
