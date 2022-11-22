@@ -901,6 +901,35 @@ namespace utilities_cs_linux {
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand emojify = new(
+                commandName: "emojify",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+                    
+                    string text = string.Join(" ", args[1..]);
+                    List<string> converted = new();
+
+                    foreach (char i in text) {
+                        if (Utils.FormatValid(
+                            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                           i.ToString()
+                        )) {
+                            converted.Add($":regional_indicator_{i.ToString().ToLower()}:");
+                        } else if (Dictionaries.EmojifySpecialCharDict.ContainsKey(i.ToString())) {
+                            converted.Add(Dictionaries.EmojifySpecialCharDict[i.ToString()]);
+                        } else {
+                            converted.Add(i.ToString());
+                        }
+                    }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() { string.Join(" ", converted), "Success!", "Message copied to clipboard." }
+                    );
+                }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
