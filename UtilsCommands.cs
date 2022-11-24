@@ -1381,6 +1381,36 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "len" }
             );
 
+            FormattableCommand characterDistribution = new(
+                commandName: "characterdistribution",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    HashSet<char> uniqueChars = new();
+                    foreach (char c in text) { uniqueChars.Add(c); }
+
+                    Dictionary<char, string> charDistrDict = new();
+                    uniqueChars.ToList().ForEach(
+                        i => charDistrDict.Add(i, $"{i}: {text.Count(f => (f == i))}\n")
+                    );
+
+                    List<char> firstLetters = charDistrDict.Keys.ToList();
+                    firstLetters.Sort();
+                    List<string> charDistr = new();
+
+                    foreach (var i in firstLetters) { charDistr.Add(charDistrDict[i]); }
+                    string result = string.Join("", charDistr);
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() { result, "Success!", "Check your clipboard." }
+                    );
+                },
+                aliases: new string[] { "chardistr", "chardistribution", "characterdistr" }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
