@@ -1288,6 +1288,76 @@ namespace utilities_cs_linux {
                 allCommandMode: "encodings"
             );
 
+            FormattableCommand ascii = new(
+                commandName: "ascii",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    Func<string, string> toAscii = (string text) => {
+                        List<string> ascii = new();
+                        foreach (char i in text) {
+                            ascii.Add(((int)i).ToString());
+                        }
+
+                        return string.Join(" ", ascii);
+                    };
+
+                    Func<string, List<int>, string> fromAscii = (string ascii, List<int> nums) => {
+                        List<string> chars = new();
+                        foreach (int i in nums) {
+                            chars.Add(((char)i).ToString());
+                        }
+
+                        return string.Join("", chars);
+                    };
+
+                    string text = string.Join(" ", args[1..]);
+                    if (Utils.FormatValid("0123456789 ", text)) {
+                        List<int> values = new();
+                        try {
+                            Utils.RegexFindAllInts(text).ForEach(x => values.Add((int)x));
+                        } catch (OverflowException) {
+                            return SocketJSON.SendJSON(
+                                "notification",
+                                new List<object>() { "Something went wrong.", "An exception occured." }
+                            );
+                        }
+
+                        List<bool> valuesAreValid = new();
+                        foreach (int i in values) {
+                            if (i.ToString().Length == 2 | i.ToString().Length == 3) {
+                                valuesAreValid.Add(true);
+                            } else {
+                                valuesAreValid.Add(false);
+                            }
+                        }
+
+                        if (!valuesAreValid.Contains(false)) {
+                            return Utils.CopyNotifCheck(
+                                copy, notif,
+                                new List<object>() {
+                                    fromAscii(string.Join(" ", values), values),
+                                    "Success!", "Check your clipboard."
+                                }
+                            );
+                        } else {
+                            return Utils.CopyNotifCheck(
+                                copy, notif,
+                                new List<object>() { toAscii(text), "Success!", "Message copied to clipboard." }
+                            );
+                        }
+                    } else {
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() { toAscii(text), "Success!", "Message copied to clipboard." }
+                        );
+                    }
+                },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
