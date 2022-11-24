@@ -1174,6 +1174,41 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "factorise" }
             );
 
+            FormattableCommand primefactors = new(
+                commandName: "primefactors",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    try {
+                        System.Numerics.BigInteger number = System.Numerics.BigInteger.Parse(args[1]);
+
+                        List<int> factors = new List<int>();
+                        int divisor = 2;
+
+                        while (number > 1) {
+                            if (number % divisor == 0 && factors.Find(x => x % divisor == 0 && x != divisor) == 0) {
+                                number /= divisor;
+                                factors.Add(divisor);
+                            } else {
+                                divisor++;
+                            }
+                        }
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() { string.Join("×", factors), "Success!", "Check your clipboard." }
+                        );
+                    } catch (FormatException) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check your parameters." }
+                        );
+                    }
+                },
+                aliases: new string[] { "primefactorise" }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
