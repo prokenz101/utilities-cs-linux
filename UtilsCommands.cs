@@ -663,9 +663,7 @@ namespace utilities_cs_linux {
                         }
                     );
                 },
-                aliases: new string[] { "wd" },
-                useInAllCommand: true,
-                allCommandMode: "fancy"
+                aliases: new string[] { "wd" }
             );
 
             FormattableCommand exponent = new(
