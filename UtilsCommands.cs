@@ -1358,6 +1358,10 @@ namespace utilities_cs_linux {
                 allCommandMode: "encodings"
             );
 
+            FormattableCommand lcm = new(
+                commandName: "lcm",
+                function: LCMClass.LCMMain
+            );
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
