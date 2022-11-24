@@ -1061,6 +1061,31 @@ namespace utilities_cs_linux {
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand shuffle = new(
+                commandName: "shuffle",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+                    
+                    string text = string.Join(" ", args[1..]);
+
+                    //* shuffle text
+                    var chars = text.ToCharArray();
+                    var random = new Random();
+                    for (int i = chars.Length - 1; i > 0; i--) {
+                        int r = random.Next(i + 1);
+                        var tmp = chars[i];
+                        chars[i] = chars[r];
+                        chars[r] = tmp;
+                    }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() { new string(chars), "Success!", "Message copied to clipboard." }
+                    );
+                }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
