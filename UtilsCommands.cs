@@ -1137,6 +1137,43 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "gcd" }
             );
 
+            FormattableCommand factors = new(
+                commandName: "factors",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    Func<System.Numerics.BigInteger, List<System.Numerics.BigInteger>> findFactors =
+                        (System.Numerics.BigInteger num) => {
+                            List<System.Numerics.BigInteger> factors = new();
+
+                            for (System.Numerics.BigInteger i = 1; i < num; i++) {
+                                if (num % i == 0) {
+                                    factors.Add(i);
+                                }
+                            }
+
+                            return factors;
+                        };
+
+                    try {
+                        System.Numerics.BigInteger num = System.Numerics.BigInteger.Parse(args[1]);
+                        List<System.Numerics.BigInteger> factors = findFactors(num);
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() { string.Join(", ", factors), "Success!", "Check your clipboard." }
+                        );
+                    } catch (FormatException) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check your parameters." }
+                        );
+                    }
+                },
+                aliases: new string[] { "factorise" }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
