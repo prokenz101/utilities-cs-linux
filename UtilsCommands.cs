@@ -1411,6 +1411,39 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "chardistr", "chardistribution", "characterdistr" }
             );
 
+            FormattableCommand replace = new(
+                commandName: "replace",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+
+                    System.Text.RegularExpressions.Regex re =
+                        new(@"[""'](?<old>.+)[""'] with [""'](?<new>.+|)[""'] in [""'](?<text>.+)[""']");
+
+                    if (re.IsMatch(text)) {
+                        var match = re.Match(text);
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() {
+                                match.Groups["text"].Value.Replace(
+                                    match.Groups["old"].Value, match.Groups["new"].Value
+                                ),
+                                "Success!",
+                                "Message copied to clipboard."
+                            }
+                        );
+                    } else {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check your syntax." }
+                        );
+                    }
+                }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
