@@ -1209,6 +1209,85 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "primefactorise" }
             );
 
+            FormattableCommand hexadecimal = new(
+                commandName: "hexadecimal",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+
+                    Func<string, string> fromTextToHex = (string text) => {
+                        byte[] ba = System.Text.Encoding.Default.GetBytes(text);
+                        var hexString = BitConverter.ToString(ba);
+                        hexString = hexString.Replace("-", " ");
+                        hexString = hexString.ToLower();
+
+                        return hexString;
+                    };
+
+                    Func<string, byte[]> fromHexToText = (string hex) => {
+                        hex = hex.Replace("-", "");
+                        byte[] raw = new byte[hex.Length / 2];
+                        for (int i = 0; i < raw.Length; i++) {
+                            raw[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+                        }
+
+                        return raw;
+                    };
+
+                    Func<IEnumerable<char>, bool> isHex = (IEnumerable<char> chars) => {
+                        bool isHex;
+                        foreach (var c in chars) {
+                            isHex = ((c >= '0' && c <= '9') ||
+                                     (c >= 'a' && c <= 'f') ||
+                                     (c >= 'A' && c <= 'F'));
+
+                            if (!isHex)
+                                return false;
+                        }
+
+                        return true;
+                    };
+
+                    string[] textList = text.Split(" ");
+                    string hexWithDash = string.Join("-", textList);
+
+                    if (isHex(string.Join("", args[1..]))) {
+                        try {
+                            return Utils.CopyNotifCheck(
+                                copy, notif,
+                                new List<object>() {
+                                    System.Text.Encoding.ASCII.GetString(fromHexToText(hexWithDash)),
+                                    "Success!",
+                                    "Check your clipboard."
+                                }
+                            );
+                        } catch {
+                            return SocketJSON.SendJSON(
+                                "notification",
+                                new List<object>() { "Something went wrong.", "An exception occured." }
+                            );
+                        }
+                    } else {
+                        try {
+                            return Utils.CopyNotifCheck(
+                                copy, notif,
+                                new List<object>() { fromTextToHex(text), "Success!", "Message copied to clipboard." }
+                            );
+                        } catch {
+                            return SocketJSON.SendJSON(
+                                "notification",
+                                new List<object>() { "Something went wrong.", "An exception occured." }
+                            );
+                        }
+                    }
+                },
+                aliases: new string[] { "hex" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
