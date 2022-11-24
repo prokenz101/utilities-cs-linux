@@ -84,6 +84,31 @@ namespace utilities_cs_linux {
         }
 
         /// <summary>
+        /// Returns all integers from a string using Regex.
+        /// </summary>
+        /// <param name="input">The string which is to be searched for integers.</param>
+        /// <returns>A list of all BigIntegers that were captured by the Regex.</returns>
+        public static List<System.Numerics.BigInteger> RegexFindAllInts(string input) {
+            input = input.Replace(",", "");
+
+            List<System.Numerics.BigInteger> BigInts = new();
+            System.Text.RegularExpressions.Regex re =
+                new System.Text.RegularExpressions.Regex(@"(?<num>-?\d+)+");
+
+            if (re.Matches(input).Count >= 1) {
+                System.Text.RegularExpressions.MatchCollection matches = re.Matches(input);
+                foreach (System.Text.RegularExpressions.Match? match in matches) {
+                    if (match != null) {
+                        System.Text.RegularExpressions.GroupCollection groups = match.Groups;
+                        BigInts.Add(System.Numerics.BigInteger.Parse(groups["num"].Value));
+                    }
+                }
+            }
+
+            return BigInts;
+        }
+
+        /// <summary>
         /// Uses Regex to search through a string using an expression.
         /// Returns a List of DIctionaries where the Match is the key and a GroupCollection of that match is the value.
         /// </summary>
