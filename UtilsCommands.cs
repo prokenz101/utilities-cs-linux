@@ -1086,6 +1086,40 @@ namespace utilities_cs_linux {
                 }
             );
 
+            FormattableCommand permutations = new(
+                commandName: "permutations",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    char[] textAsCharArray = string.Join(" ", args[1..]).ToCharArray();
+
+                    // checks if textAsCharArray is than the permutationsCalculationLimit
+                    int limit = Program.CurrentSettings.PermutationsCalculationLimit;
+
+                    if (textAsCharArray.Length <= limit) {
+                        Permutations permutation = new();
+                        permutation.GetPer(textAsCharArray);
+                        HashSet<string> hashSetAnswer = permutation.Permutation;
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() {
+                                string.Join("\n", hashSetAnswer),
+                                "Success!",
+                                "Check your clipboard."
+                            }
+                        );
+                    } else {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Prompt too long.", "Check your parameters." }
+                        );
+                    }
+                },
+                aliases: new string[] { "getpermutations", "get-permutations" }
+            );
+            
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
