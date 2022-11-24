@@ -1131,6 +1131,12 @@ namespace utilities_cs_linux {
                 function: GZip.GZipMain
             );
 
+            FormattableCommand hcf = new(
+                commandName: "hcf",
+                function: HCF.HCFMain,
+                aliases: new string[] { "gcd" }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
