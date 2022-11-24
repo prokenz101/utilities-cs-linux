@@ -1362,6 +1362,25 @@ namespace utilities_cs_linux {
                 commandName: "lcm",
                 function: LCMClass.LCMMain
             );
+
+            FormattableCommand length = new(
+                commandName: "length",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    string len = $@"Character count: {text.Length.ToString()}
+Word count: {args[1..].Length}";
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() { len, "Success!", "Check your clipboard." }
+                    );
+                },
+                aliases: new string[] { "len" }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
