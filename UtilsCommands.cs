@@ -1126,6 +1126,11 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "fc" }
             );
 
+            FormattableCommand gzip = new(
+                commandName: "gzip",
+                function: GZip.GZipMain
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
