@@ -1120,6 +1120,12 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "getpermutations", "get-permutations" }
             );
             
+            FormattableCommand fraction = new(
+                commandName: "fraction",
+                function: Fractions.FractionsMain,
+                aliases: new string[] { "fc" }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
