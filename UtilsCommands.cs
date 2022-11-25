@@ -1557,6 +1557,36 @@ Word count: {args[1..].Length}";
                 allCommandMode: "encodings"
             );
 
+            FormattableCommand reciprocal = new(
+                commandName: "reciprocal",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    try {
+                        double number = double.Parse(args[1]);
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() {
+                                Math.ReciprocalEstimate(number).ToString(),
+                                "Success!",
+                                "Check your clipboard."
+                            }
+                        );
+                    } catch (OverflowException) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Number might be too large." }
+                        );
+                    } catch (FormatException) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Are you sure that was a number?" }
+                        );
+                    }
+                }
+            );
+
         }
     }
 }
