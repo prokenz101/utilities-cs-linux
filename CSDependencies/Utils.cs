@@ -51,6 +51,18 @@ namespace utilities_cs_linux {
         }
 
         /// <summary>
+        /// Interchanges the position of key and value in a dictionary.
+        /// </summary>
+        /// <param name="dict">The dictionary that is inverted.</param>
+        /// <returns>A dictionary with all keys and values inverted.</returns>
+        public static Dictionary<string, string> InvertKeyAndValue(Dictionary<string, string> dict) {
+            Dictionary<string, string> finalDict = new();
+            foreach (var key in dict.Keys) { finalDict[dict[key]] = key; }
+
+            return finalDict;
+        }
+
+        /// <summary>
         /// A method that returns a rounded-version of a number if it is close enough to a whole number.
         /// 5.999999998 -> 6, 5.5 = 5.5.
         /// </summary>
