@@ -34,19 +34,26 @@ namespace utilities_cs_linux {
         public static string? ExecuteCommand(string[] args, bool copy = true, bool notif = true) {
             string cmd = args[0].ToLower();
 
-            if (FCommands.ContainsKey(cmd)) {
-                string? output = FCommands[cmd].Invoke(args, copy, notif);
-                return output != null ? output : null;
-            } else if (RCommands.ContainsKey(cmd)) {
-                string? output = RCommands[cmd].Invoke(args);
-                return output != null ? output : null;
-                // } else if (Force.AreAnyForced()) {
-                //     args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
-                //     string? output = Force.forced!.Function!.Invoke(args, copy, notif);
-                //     if (output != null) { return output; } else { return null; }
-            } else {
+            try {
+                if (FCommands.ContainsKey(cmd)) {
+                    string? output = FCommands[cmd].Invoke(args, copy, notif);
+                    return output != null ? output : null;
+                } else if (RCommands.ContainsKey(cmd)) {
+                    string? output = RCommands[cmd].Invoke(args);
+                    return output != null ? output : null;
+                    // } else if (Force.AreAnyForced()) {
+                    //     args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
+                    //     string? output = Force.forced!.Function!.Invoke(args, copy, notif);
+                    //     if (output != null) { return output; } else { return null; }
+                } else {
+                    return SocketJSON.SendJSON(
+                        "notification", new List<object>() { "Command not found.", "Try again." }
+                    );
+                }
+            } catch {
                 return SocketJSON.SendJSON(
-                    "notification", new List<object>() { "Command not found.", "Try again." }
+                    "notification",
+                    new List<object>() { "Something went wrong.", "An exception occured." }
                 );
             }
         }
