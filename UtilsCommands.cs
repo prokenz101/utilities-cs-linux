@@ -1587,6 +1587,38 @@ Word count: {args[1..].Length}";
                 }
             );
 
+            FormattableCommand divide = new(
+                commandName: "divide",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<System.Numerics.BigInteger> ints = Utils.RegexFindAllInts(text);
+
+                    System.Numerics.BigInteger dividedNum =
+                        ints[0] / ints[1]; System.Numerics.BigInteger remainder = ints[0] % ints[1];
+
+                    Func<string, string?> returnNum = (string ans) => {
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() { ans, "Success!", "Check your clipboard." }
+                        );
+                    };
+
+                    if (remainder != 0 && ints.Count > 1) {
+                        return returnNum($"Answer: {dividedNum} and Remainder: {remainder}");
+                    } else if (remainder == 0) {
+                        return returnNum($"Answer: {dividedNum}");
+                    } else {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check your parameters." }
+                        );
+                    }
+                }
+            );
+
         }
     }
 }
