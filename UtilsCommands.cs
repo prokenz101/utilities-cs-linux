@@ -1493,6 +1493,70 @@ Word count: {args[1..].Length}";
                 useInAllCommand: true,
                 allCommandMode: "fancy"
             );
+
+            FormattableCommand morse = new(
+                commandName: "morse",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]).ToLower();
+
+                    Func<string, bool, bool, string?> toMorse = (string text, bool copy, bool notif) => {
+                        List<string> morseConverted = new();
+
+                        foreach (char t in text) {
+                            if (Dictionaries.MorseToTextDict.ContainsKey(t.ToString())) {
+                                morseConverted.Add(Dictionaries.MorseToTextDict[t.ToString()]);
+                                morseConverted.Add(" ");
+                            } else {
+                                morseConverted.Add(t.ToString());
+                            }
+                        }
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() {
+                                string.Join("", morseConverted),
+                                "Success!", "Message copied to clipboard."
+                            }
+                        );
+                    };
+
+                    Func<string, bool, bool, string?> toText = (string morse, bool copy, bool notif) => {
+                        List<string> convertedText = new();
+                        Dictionary<string, string> morseToText = Utils.InvertKeyAndValue(Dictionaries.MorseToTextDict);
+                        string[] textArray = morse.Split(" ");
+
+                        foreach (string m in textArray) {
+                            if (morseToText.ContainsKey(m.ToString())) {
+                                convertedText.Add(morseToText[m.ToString()]);
+                            } else {
+                                convertedText.Add(m.ToString());
+                            }
+                        }
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() {
+                                string.Join("", convertedText),
+                                "Success!",
+                                "Check your clipboard."
+                            }
+                        );
+                    };
+
+                    if (Utils.FormatValid("-./ ", text)) {
+                        return toText(text, copy, notif);
+                    } else {
+                        return toMorse(text, copy, notif);
+                    }
+                },
+                aliases: new string[] { "morsecode" },
+                useInAllCommand: true,
+                allCommandMode: "encodings"
+            );
+
         }
     }
 }
