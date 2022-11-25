@@ -430,16 +430,10 @@ namespace utilities_cs_linux {
 
                     string text = string.Join(" ", args[1..]);
                     if (isBase64(text)) {
-                        try {
-                            string ans = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(text));
-                            return Utils.CopyNotifCheck(
-                                copy, notif, new List<object>() { ans, "Success!", $"Check your clipboard." }
-                            );
-                        } catch {
-                            return SocketJSON.SendJSON(
-                                "notification", new List<object>() { "Something went wrong.", "An exception occured." }
-                            );
-                        }
+                        string ans = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(text));
+                        return Utils.CopyNotifCheck(
+                            copy, notif, new List<object>() { ans, "Success!", $"Check your clipboard." }
+                        );
                     } else {
                         string ans = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(text));
                         return Utils.CopyNotifCheck(
@@ -548,20 +542,14 @@ namespace utilities_cs_linux {
                         );
 
                     } else {
-                        try {
-                            string[] textList = text.Split(" ");
-                            var chars = from split in textList select ((char)Convert.ToInt32(split, 2)).ToString();
+                        string[] textList = text.Split(" ");
+                        var chars = from split in textList select ((char)Convert.ToInt32(split, 2)).ToString();
 
-                            return Utils.CopyNotifCheck(
-                                copy, notif, new List<object>() {
+                        return Utils.CopyNotifCheck(
+                            copy, notif, new List<object>() {
                                     string.Join("", chars), "Success!", "Check your clipboard."
-                                }
-                            );
-                        } catch {
-                            return SocketJSON.SendJSON(
-                                "notification", new List<object>() { "Something went wrong.", "An exception occured." }
-                            );
-                        }
+                            }
+                        );
                     }
                 },
                 aliases: new string[] { "bin" },
@@ -717,20 +705,14 @@ namespace utilities_cs_linux {
                     string indexTest = Utils.IndexTest(args);
                     if (indexTest != "false") { return indexTest; }
 
-                    try {
-                        System.Numerics.BigInteger n = System.Numerics.BigInteger.Parse(args[1]);
-                        System.Numerics.BigInteger i = 1;
-                        System.Numerics.BigInteger v = 1;
-                        while (i <= n) { v *= i; i += 1; }
+                    System.Numerics.BigInteger n = System.Numerics.BigInteger.Parse(args[1]);
+                    System.Numerics.BigInteger i = 1;
+                    System.Numerics.BigInteger v = 1;
+                    while (i <= n) { v *= i; i += 1; }
 
-                        return Utils.CopyNotifCheck(
-                            copy, notif, new List<object>() { v.ToString(), "Success!", "Message copied to clipboard." }
-                        );
-                    } catch {
-                        return SocketJSON.SendJSON(
-                            "notification", new List<object>() { "Something went wrong.", "idk how this happened" }
-                        );
-                    }
+                    return Utils.CopyNotifCheck(
+                        copy, notif, new List<object>() { v.ToString(), "Success!", "Message copied to clipboard." }
+                    );
                 }
             );
 
@@ -1023,11 +1005,6 @@ namespace utilities_cs_linux {
                         return SocketJSON.SendJSON(
                             "notification", new List<object>() { "Something went wrong.", "Was that really a number?" }
                         );
-                    } catch {
-                        return SocketJSON.SendJSON(
-                            "notification",
-                            new List<object>() { "Something went wrong.", "An exception has occured." }
-                        );
                     }
                 }
             );
@@ -1261,33 +1238,19 @@ namespace utilities_cs_linux {
                     string hexWithDash = string.Join("-", textList);
 
                     if (isHex(string.Join("", args[1..]))) {
-                        try {
-                            return Utils.CopyNotifCheck(
-                                copy, notif,
-                                new List<object>() {
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() {
                                     System.Text.Encoding.ASCII.GetString(fromHexToText(hexWithDash)),
                                     "Success!",
                                     "Check your clipboard."
-                                }
-                            );
-                        } catch {
-                            return SocketJSON.SendJSON(
-                                "notification",
-                                new List<object>() { "Something went wrong.", "An exception occured." }
-                            );
-                        }
+                            }
+                        );
                     } else {
-                        try {
-                            return Utils.CopyNotifCheck(
-                                copy, notif,
-                                new List<object>() { fromTextToHex(text), "Success!", "Message copied to clipboard." }
-                            );
-                        } catch {
-                            return SocketJSON.SendJSON(
-                                "notification",
-                                new List<object>() { "Something went wrong.", "An exception occured." }
-                            );
-                        }
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() { fromTextToHex(text), "Success!", "Message copied to clipboard." }
+                        );
                     }
                 },
                 aliases: new string[] { "hex" },
