@@ -1461,6 +1461,23 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "charcount" }
             );
 
+            FormattableCommand lowercase = new(
+                commandName: "lowercase",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() {
+                            string.Join(" ", args[1..]).ToLower(),
+                            "Success!", "Message copied to clipboard."
+                        }
+                    );
+                },
+                aliases: new string[] { "lower" }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
