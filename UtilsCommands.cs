@@ -830,7 +830,7 @@ namespace utilities_cs_linux {
                     if (indexTest != "false") { return indexTest; }
 
                     string text = string.Join(" ", args[1..]);
-                    
+
                     //* Testing if inputted string is a number.
                     try {
                         Convert.ToDouble(text);
@@ -893,7 +893,7 @@ namespace utilities_cs_linux {
                 function: (string[] args, bool copy, bool notif) => {
                     string indexTest = Utils.IndexTest(args);
                     if (indexTest != "false") { return indexTest; }
-                    
+
                     string text = string.Join(" ", args[1..]);
                     List<string> converted = new();
 
@@ -1050,7 +1050,7 @@ namespace utilities_cs_linux {
                 function: (string[] args, bool copy, bool notif) => {
                     string indexTest = Utils.IndexTest(args);
                     if (indexTest != "false") { return indexTest; }
-                    
+
                     string text = string.Join(" ", args[1..]);
 
                     //* shuffle text
@@ -1103,7 +1103,7 @@ namespace utilities_cs_linux {
                 },
                 aliases: new string[] { "getpermutations", "get-permutations" }
             );
-            
+
             FormattableCommand fraction = new(
                 commandName: "fraction",
                 function: Fractions.FractionsMain,
