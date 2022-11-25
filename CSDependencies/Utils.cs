@@ -72,7 +72,7 @@ namespace utilities_cs_linux {
         /// If the number was not rounded off, it returns the same number.s
         /// </returns>
         public static double RoundIfNumberIsNearEnough(double num) {
-            System.Text.RegularExpressions.Regex re = new(@"-?\d+\.(?:9){6,}");
+            System.Text.RegularExpressions.Regex re = new(@"-?\d+\.(?:9{6,})|-?\d+\.(?:0{6,})");
 
             if (re.Matches(num.ToString()).Count == 1) {
                 return Math.Round(num);
