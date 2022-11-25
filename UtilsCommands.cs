@@ -1414,6 +1414,53 @@ Word count: {args[1..].Length}";
                 }
             );
 
+            FormattableCommand characterCount = new(
+                commandName: "charactercount",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    bool failed = false;
+                    var matchToGroups = Utils.RegexFind(
+                        input: text,
+                        expression: "(?<char>.) in (?<text>.+)",
+                        useIsMatch: true,
+                        ifNotMatch: () => { failed = true; }
+                    );
+
+                    if (failed) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check your syntax." }
+                        );
+                    }
+
+                    if (matchToGroups != null) {
+                        foreach (var kvp in matchToGroups) {
+                            char? character = kvp.Key.Groups["char"].Value.ToCharArray()[0];
+                            string? textToSearch = kvp.Key.Groups["text"].Value;
+
+                            if (character != null && textToSearch != null) {
+                                return Utils.CopyNotifCheck(
+                                    copy, notif,
+                                    new List<object>() {
+                                        $"\"{character}\": {textToSearch.Count(f => (f == character))}",
+                                        "Success!", "Check your clipboard."
+                                    }
+                                );
+                            }
+                        }
+                    }
+
+                    return SocketJSON.SendJSON(
+                        "notification",
+                        new List<object>() { "Something went wrong.", "An exception occured." }
+                    );
+                },
+                aliases: new string[] { "charcount" }
+            );
+
             FormattableCommand mathitalic = new(
                 commandName: "mathitalic",
                 function: (string[] args, bool copy, bool notif) => {
