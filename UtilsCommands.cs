@@ -1664,6 +1664,54 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "percent", "%" }
             );
 
+            FormattableCommand randchar = new(
+                commandName: "randchar",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string[] asciiCharacters = {
+                        "a", "b", "c", "d", "e",
+                        "f", "g", "h", "i", "j",
+                        "k", "l", "m", "n", "o", "p",
+                        "q", "r", "s", "t", "u", "v",
+                        "w", "x", "y", "z", "A", "B",
+                        "C", "D", "E", "F", "G", "H",
+                        "I", "J", "K", "L", "M", "N",
+                        "O", "P", "Q", "R", "S", "T",
+                        "U", "V", "W", "X", "Y", "Z"
+                    };
+
+                    string text = string.Join(" ", args[1..]);
+
+                    //* testing if text is a number
+                    try {
+                        int.Parse(text);
+                    } catch (FormatException) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Was that really a number?" }
+                        );
+                    } catch (OverflowException) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Number might be too large." }
+                        );
+                    }
+
+                    Random rand = new Random();
+                    List<string> randomChar = new();
+
+                    foreach (int i in Enumerable.Range(1, int.Parse(text))) {
+                        randomChar.Add(asciiCharacters[rand.Next(0, asciiCharacters.Length - 1)]);
+                    }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() { string.Join("", randomChar), "Success!", "Text copied to clipboard." }
+                    );
+                }
+            );
         }
     }
 }
