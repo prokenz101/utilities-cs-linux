@@ -1619,6 +1619,51 @@ Word count: {args[1..].Length}";
                 }
             );
 
+            FormattableCommand percentage = new(
+                commandName: "percentage",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    //* making regex
+                    System.Text.RegularExpressions.Regex findNumberFromPercentage =
+                        new(@"(?<percent>-?\d+\.\d+|-?\d+)% of (?<number>-?\d+\.\d+|-?\d+)");
+                    System.Text.RegularExpressions.Regex findPercentageFromNumbers =
+                        new(@"get (?<num1>-?\d+\.\d+|-?\d+) and (?<num2>-?\d+\.\d+|-?\d+)");
+
+                    if (findNumberFromPercentage.IsMatch(text)) {
+                        var matches = findNumberFromPercentage.Matches(text);
+                        float percent = (float.Parse(matches[0].Groups["percent"].Value));
+                        float number = float.Parse(matches[0].Groups["number"].Value);
+
+                        string ans = Utils.RoundIfNumberIsNearEnough((percent / 100) * number).ToString();
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() { ans, "Success!", $"{ans} is {percent}% of {number}" }
+                        );
+                    } else if (findPercentageFromNumbers.IsMatch(text)) {
+                        var matches = findPercentageFromNumbers.Matches(text);
+                        float num1 = float.Parse(matches[0].Groups["num1"].Value);
+                        float num2 = float.Parse(matches[0].Groups["num2"].Value);
+
+                        string ans = Utils.RoundIfNumberIsNearEnough((num1 / num2) * 100).ToString();
+
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() { ans, "Success!", $"{num1} is {ans}% of {num2}" }
+                        );
+                    } else {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check your parameters." }
+                        );
+                    }
+                },
+                aliases: new string[] { "percent", "%" }
+            );
+
         }
     }
 }
