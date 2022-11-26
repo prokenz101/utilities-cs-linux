@@ -1898,6 +1898,31 @@ Word count: {args[1..].Length}";
                 }
             );
 
+            FormattableCommand md5 = new(
+                commandName: "md5",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    Func<string, string> MD5Hasher = (string input) => {
+                        using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create()) {
+                            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+                            byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+                            return Convert.ToHexString(hashBytes);
+                        }
+                    };
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() {
+                            MD5Hasher(string.Join(" ", args[1..])),
+                            "Success!", "Hash copied to clipboard."
+                        }
+                    );
+                }
+            );
+
         }
     }
 }
