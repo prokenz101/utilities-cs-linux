@@ -1752,6 +1752,27 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "randnum" }
             );
 
+            FormattableCommand reverse = new(
+                commandName: "reverse",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<char> textList = text.ToCharArray().ToList();
+
+                    textList.Reverse();
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() {
+                            string.Join("", textList), "Success!", "Message copied to clipboard."
+                        }
+                    );
+                },
+                useInAllCommand: true,
+                allCommandMode: "fancy"
+            );
+
         }
     }
 }
