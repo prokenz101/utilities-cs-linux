@@ -1773,6 +1773,34 @@ Word count: {args[1..].Length}";
                 allCommandMode: "fancy"
             );
 
+            FormattableCommand sarcasm = new(
+                commandName: "sarcasm",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<string> converted = new();
+                    char currentCase = 'u';
+
+                    foreach (char i in text) {
+                        string iStr = i.ToString();
+                        if (currentCase == 'u') {
+                            converted.Add(iStr.ToUpper());
+                            currentCase = 'l';
+                        } else if (currentCase == 'l') {
+                            converted.Add(iStr.ToLower());
+                            currentCase = 'u';
+                        }
+                    }
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() {
+                            string.Join("", converted), "Success!", "Message copied to clipboard."
+                        }
+                    );
+                }
+            );
         }
     }
 }
