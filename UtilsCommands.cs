@@ -1939,6 +1939,26 @@ Word count: {args[1..].Length}";
                     );
                 }
             );
+
+            FormattableCommand spoilerspam = new(
+                commandName: "spoilerspam",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<string> converted = new();
+                    foreach (char i in text) { converted.Add($"||{i}"); }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() {
+                            $"{string.Join("||", converted)}||",
+                            "Success!", "Message copied to clipboard."
+                        }
+                    );
+                }
+            );
         }
     }
 }
