@@ -21,7 +21,7 @@ namespace utilities_cs_linux {
         static void Main(string[] args) {
             RegisterCommands.RegisterAllRCommands();
             RegisterCommands.RegisterAllFCommands();
-            Settings.CreateJson();
+            if (Settings.SettingsJsonExists()) { Settings.CreateJson(); }
 
             ProcessStartInfo pythonProcess = new(
                 "python3",
