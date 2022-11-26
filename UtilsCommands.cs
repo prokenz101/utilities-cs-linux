@@ -1850,6 +1850,30 @@ Word count: {args[1..].Length}";
                 }
             );
 
+            FormattableCommand sha384 = new(
+                commandName: "sha384",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+                    using (System.Security.Cryptography.SHA384 hash = System.Security.Cryptography.SHA384.Create()) {
+                        System.Text.Encoding enc = System.Text.Encoding.UTF8;
+                        Byte[] result = hash.ComputeHash(enc.GetBytes(text));
+
+                        foreach (Byte b in result)
+                            sb.Append(b.ToString("x2"));
+                    }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() { sb.ToString(), "Success!", "Message copied to clipboard." }
+                    );
+                }
+            );
+
         }
     }
 }
