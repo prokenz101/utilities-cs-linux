@@ -1712,6 +1712,46 @@ Word count: {args[1..].Length}";
                     );
                 }
             );
+
+            FormattableCommand randint = new(
+                commandName: "randint",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    string text = string.Join(" ", args[1..]);
+                    List<int> nums = new();
+                    try {
+                        Utils.RegexFindAllInts(text).ForEach(num => nums.Add((int)num));
+                    } catch (OverflowException) {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Number might be too large." }
+                        );
+                    }
+
+                    if (nums.Count > 1) {
+                        //* quick check to see if the first num is greater than second
+                        return nums[0] > nums[1] ? SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check your parameters." }
+                        ) : Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() {
+                                new Random().Next(nums[0], nums[1] + 1),
+                                "Success!", "Check your clipboard."
+                            }
+                        );
+                    } else {
+                        return SocketJSON.SendJSON(
+                            "notification",
+                            new List<object>() { "Something went wrong.", "Check your parameters." }
+                        );
+                    }
+                },
+                aliases: new string[] { "randnum" }
+            );
+
         }
     }
 }
