@@ -44,6 +44,8 @@ def send_receive_data(data):
 
 
 def main():
+    notification("Welcome.", "utilities-cs is now running.")
+
     with keyboard.Listener(on_release=on_release) as listener:
         listener.join()
 
