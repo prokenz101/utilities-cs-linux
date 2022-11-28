@@ -2034,6 +2034,34 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "upper" }
             );
 
+            FormattableCommand camelcase = new(
+                commandName: "camelcase",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    Func<string, string?> output = (string result) => {
+                        return Utils.CopyNotifCheck(
+                            copy, notif,
+                            new List<object>() { result, "Success!", "Message copied to clipboard." }
+                        );
+                    };
+
+                    List<string> ans = new();
+                    ans.Add(args[1].ToLower());
+
+                    try {
+                        var test = args[2];
+                        foreach (string i in args[2..]) {
+                            ans.Add(Utils.Capitalise(i));
+                        }
+                    } catch (IndexOutOfRangeException) {
+                        return output(ans[0]);
+                    }
+
+                    return output(string.Join("", ans));
+                }
+            );
         }
     }
 }
