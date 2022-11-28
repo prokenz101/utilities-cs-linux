@@ -340,6 +340,14 @@ namespace utilities_cs_linux {
 
     public class RegisterCommands {
         public static void RegisterAllRCommands() {
+            //TODO: RegularCommand autoclick = new();
+            //TODO: RegularCommand send = new();
+            //TODO: RegularCommand spam = new();
+            //TODO: RegularCommand settings = new();
+            //TODO: RegularCommand force = new();
+            //TODO: RegularCommand unforce = new();
+            //TODO: RegularCommand update = new();
+
             RegularCommand exit = new(
                 commandName: "exit",
                 function: (string[] args) => {
@@ -352,6 +360,13 @@ namespace utilities_cs_linux {
             RegularCommand format = new(
                 commandName: "format",
                 function: Format.FormatMain
+            //TODO: RegularCommand help = new();
+            //TODO: RegularCommand notification = new();
+            //TODO: RegularCommand remind = new();
+            //TODO: RegularCommand googleSearch = new();
+            //TODO: RegularCommand youtubeSearch = new();
+            //TODO: RegularCommand imageSearch = new();
+            //TODO: RegularCommand translate = new();
             );
         }
 
