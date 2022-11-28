@@ -2099,6 +2099,43 @@ Word count: {args[1..].Length}";
                 }
             );
 
+            FormattableCommand piglatin = new(
+                commandName: "piglatin",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    List<string> pigLatin = new();
+                    foreach (string word in args[1..]) {
+                        if (
+                            word.StartsWith("a")
+                            | word.StartsWith("e")
+                            | word.StartsWith("i")
+                            | word.StartsWith("o")
+                            | word.StartsWith("u")
+                        ) {
+                            pigLatin.Add(word + "ay");
+                        } else {
+                            List<string> lettersX = word[1..].Split().ToList(); //* all letters of word except the first
+                            string firstLetter = word[0].ToString(); //* first letter of word
+
+                            //* add first letter and "ay" to end of word
+                            lettersX.Add(firstLetter); lettersX.Add("ay");
+
+                            //* join letters together
+                            pigLatin.Add(string.Join("", lettersX));
+                        }
+                    }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() {
+                            string.Join(" ", pigLatin),
+                            "Success!", "Message copied to clipboard."
+                        }
+                    );
+                }
+            );
         }
     }
 }
