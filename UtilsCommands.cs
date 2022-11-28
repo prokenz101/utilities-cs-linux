@@ -370,6 +370,25 @@ namespace utilities_cs_linux {
             //TODO: RegularCommand youtubeSearch = new();
             //TODO: RegularCommand imageSearch = new();
             //TODO: RegularCommand translate = new();
+
+            RegularCommand getcommandcount = new(
+                commandName: "getcommandcount",
+                function: (string[] args) => {
+                    int regularCommandsCount = RegularCommand.RegularCommands.Count;
+                    int formattableCommandsCount = FormattableCommand.FormattableCommands.Count;
+
+                    return Utils.CopyNotifCheck(
+                        true, true,
+                        new List<object>() {
+                            $@"Total Commands: {regularCommandsCount + formattableCommandsCount}
+RegularCommands Count: {regularCommandsCount}
+FormattableCommands Count: {formattableCommandsCount}",
+                            "Success!",
+                            "Count copied to clipboard."
+                        }
+                    );
+                },
+                aliases: new string[] { "totalcommandcount", "get-commandcount" }
             );
         }
 
