@@ -2062,6 +2062,26 @@ Word count: {args[1..].Length}";
                     return output(string.Join("", ans));
                 }
             );
+
+            FormattableCommand pascalcase = new(
+                commandName: "pascalcase",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    List<string> output = new();
+                    args[1..].ToList<string>().ForEach(i => output.Add(Utils.Capitalise(i)));
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() {
+                            string.Join("", output), "Success!", "Message copied to clipboard."
+                        }
+                    );
+                },
+                aliases: new string[] { "pascal" }
+            );
+
         }
     }
 }
