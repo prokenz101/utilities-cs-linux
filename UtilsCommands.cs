@@ -22,7 +22,7 @@ namespace utilities_cs_linux {
         /// <summary>
         /// A dictionary of command names to methods (For RegularCommands).
         /// </summary>
-        public static Dictionary<string, Func<string[], string>> RCommands = new();
+        public static Dictionary<string, Func<string[], string?>> RCommands = new();
         /// <summary>
         /// Executes a command in either the RCommands dictionary or the FCommands dictionary.
         /// </summary>
@@ -277,7 +277,7 @@ namespace utilities_cs_linux {
     /// The class that supports regular commands.
     /// </summary>
     public class RegularCommand : Command {
-        public Func<string[], string>? Function;
+        public Func<string[], string?>? Function;
         public static List<RegularCommand> RegularCommands = new();
         /// <summary>
         /// Initializes a new instance of a RegularCommand.
@@ -285,7 +285,7 @@ namespace utilities_cs_linux {
         /// <param name="commandName">The name of the regular command.</param>
         /// <param name="function">The function to be run.</param>
         /// <param name="aliases">The aliases for the command.</param>
-        public RegularCommand(string commandName, Func<string[], string> function, string[]? aliases = null) {
+        public RegularCommand(string commandName, Func<string[], string?> function, string[]? aliases = null) {
             //* setting all attributes for instance
             CommandName = commandName.ToLower(); Function = function; Aliases = aliases;
             if (aliases != null) {
@@ -304,7 +304,7 @@ namespace utilities_cs_linux {
         /// <returns>A string with every RegularCommand, seperated by newlines.</returns>
         public static string ListAllRCommands() {
             List<string> rCommandsList = new();
-            foreach (KeyValuePair<string, Func<string[], string>> i in Command.RCommands) {
+            foreach (KeyValuePair<string, Func<string[], string?>> i in Command.RCommands) {
                 rCommandsList.Add(i.Key);
             }
 
