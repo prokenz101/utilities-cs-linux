@@ -2082,6 +2082,23 @@ Word count: {args[1..].Length}";
                 aliases: new string[] { "pascal" }
             );
 
+            FormattableCommand snakecase = new(
+                commandName: "snakecase",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() {
+                            string.Join("_", args[1..]).ToLower(),
+                            "Success!",
+                            "Message copied to clipboard."
+                        }
+                    );
+                }
+            );
+
         }
     }
 }
