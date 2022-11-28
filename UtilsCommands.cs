@@ -346,6 +346,12 @@ namespace utilities_cs_linux {
             //TODO: RegularCommand settings = new();
             //TODO: RegularCommand force = new();
             //TODO: RegularCommand unforce = new();
+
+            RegularCommand format = new(
+                commandName: "format",
+                function: Format.FormatMain
+            );
+
             //TODO: RegularCommand update = new();
 
             RegularCommand exit = new(
@@ -357,9 +363,6 @@ namespace utilities_cs_linux {
                 aliases: new string[] { "quit" }
             );
 
-            RegularCommand format = new(
-                commandName: "format",
-                function: Format.FormatMain
             //TODO: RegularCommand help = new();
             //TODO: RegularCommand notification = new();
             //TODO: RegularCommand remind = new();
