@@ -2016,6 +2016,24 @@ Word count: {args[1..].Length}";
                 },
                 aliases: new string[] { "title" }
             );
+
+            FormattableCommand uppercase = new(
+                commandName: "uppercase",
+                function: (string[] args, bool copy, bool notif) => {
+                    string indexTest = Utils.IndexTest(args);
+                    if (indexTest != "false") { return indexTest; }
+
+                    return Utils.CopyNotifCheck(
+                        copy, notif,
+                        new List<object>() {
+                            string.Join(" ", args[1..]).ToUpper(),
+                            "Success!", "Message copied to clipboard."
+                        }
+                    );
+                },
+                aliases: new string[] { "upper" }
+            );
+
         }
     }
 }
