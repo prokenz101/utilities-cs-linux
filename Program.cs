@@ -199,7 +199,7 @@ It will also create a .desktop file which will allow you to open utilities-cs fr
             Console.WriteLine(@"
 -----------------------------------------
 
-Have you ran the command? (y/n)
+Have you run the command? (y/n)
 
 PLEASE READ THIS CAREFULLY
 (y) -> Will delete the .desktop file maker and its project files (Completes setup process)
