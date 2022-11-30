@@ -7,7 +7,7 @@ namespace utilities_cs_linux {
     class Program {
         public static string UtilitiesFolderPath = Path.Combine("/home", $"{System.Environment.UserName}/utilities-cs");
         public static string IconPath = Path.Combine(UtilitiesFolderPath, "Assets/UtilitiesIcon.png");
-        public static string PythonSockets = "PythonDependencies/sockets.py"; //TODO Path.Combine(UtilitiesFolderPath, "PythonDependencies/sockets.py");
+        public static string PythonSockets = Path.Combine(UtilitiesFolderPath, "PythonDependencies/sockets.py");
         public static string SettingsJSONPath = Path.Combine(UtilitiesFolderPath, "settings.json");
         public static Settings CurrentSettings = Settings.GetSettings();
         public static Uri LocalHost = new Uri("ws://127.0.0.1:8005");
