@@ -37,12 +37,6 @@ Please try again without root permissions (sudo).");
             cloneMainProcess.WaitForExit();
             Console.WriteLine("\nCloned the repository.\n");
 
-            //? Move the socket-handling python file into the utilities-cs folder
-            File.Move(
-                Path.Combine(Path.Combine(UtilitiesFolderPath, "utilities-cs-linux"), "sockets.py"),
-                Path.Combine(UtilitiesFolderPath, "sockets.py"), overwrite: true
-            );
-
             //? Building the cloned project into an executable
             var buildClonedProject = new System.Diagnostics.Process();
             buildClonedProject.StartInfo.FileName = "dotnet";
@@ -63,10 +57,6 @@ Please try again without root permissions (sudo).");
                 overwrite: true
             ); Console.WriteLine("\nMoved the obtained executable to root folder.");
 
-            //? Delete the cloned folder
-            Directory.Delete(Path.Combine(UtilitiesFolderPath, "utilities-cs-linux"), recursive: true);
-            Console.WriteLine("\nDeleted the cloned folder.\n");
-
             //! Python integrations
 
             //? Installing required pip packages
@@ -79,7 +69,31 @@ Please try again without root permissions (sudo).");
             pipPackagesInstall.WaitForExit();
             Console.WriteLine("\nInstalled required pip packages (python)");
 
-            //TODO: Implement python files stuff
+            //? Moving python dependencies to utilities-cs folder
+            string[] pythonDependencyFileNames = Directory.GetFiles(
+                Path.Combine(UtilitiesFolderPath, "utilities-cs-linux", "PythonDependencies")
+            ); //* Full paths
+            pythonDependencyFileNames.ToList<string>().ForEach(
+                x => pythonDependencyFileNames[
+                    pythonDependencyFileNames.ToList<string>().IndexOf(x)
+                ] = Path.GetFileName(x)
+            ); //* Makes it so that the paths only show the file name
+            
+            Directory.CreateDirectory(Path.Combine(UtilitiesFolderPath, "PythonDependencies"));
+
+            foreach (string i in pythonDependencyFileNames) {
+                File.Move(
+                    Path.Combine(UtilitiesFolderPath, "utilities-cs-linux", "PythonDependencies", i),
+                    Path.Combine(UtilitiesFolderPath, "PythonDependencies", i),
+                    overwrite: true
+                );
+            }
+
+            Console.WriteLine("\nAdded python dependencies to utilities-cs folder.");
+
+            //! Delete the cloned folder
+            Directory.Delete(Path.Combine(UtilitiesFolderPath, "utilities-cs-linux"), recursive: true);
+            Console.WriteLine("\nDeleted the cloned folder.\n");
 
             //! Creating the .desktop file maker
 
