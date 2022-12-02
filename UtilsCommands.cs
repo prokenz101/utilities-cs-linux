@@ -41,10 +41,10 @@ namespace utilities_cs_linux {
                 } else if (RCommands.ContainsKey(cmd)) {
                     string? output = RCommands[cmd].Invoke(args);
                     return output != null ? output : null;
-                    // } else if (Force.AreAnyForced()) {
-                    //     args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
-                    //     string? output = Force.forced!.Function!.Invoke(args, copy, notif);
-                    //     if (output != null) { return output; } else { return null; }
+                    } else if (Force.AreAnyForced()) {
+                        args = Enumerable.Concat(new string[] { "cmd" }, args).ToArray<string>();
+                        string? output = Force.forced!.Function!.Invoke(args, copy, notif);
+                        return output != null ? output : null;
                 } else {
                     return SocketJSON.SendJSON(
                         "notification", new List<object>() { "Command not found.", "Try again." }
@@ -344,8 +344,17 @@ namespace utilities_cs_linux {
             //TODO: RegularCommand send = new();
             //TODO: RegularCommand spam = new();
             //TODO: RegularCommand settings = new();
-            //TODO: RegularCommand force = new();
-            //TODO: RegularCommand unforce = new();
+
+            RegularCommand force = new(
+                commandName: "force",
+                function: Force.ForceMain
+            );
+
+            RegularCommand unforce = new(
+                commandName: "unforce",
+                function: Force.UnforceMain,
+                aliases: new string[] { "un-force" }
+            );
 
             RegularCommand format = new(
                 commandName: "format",
