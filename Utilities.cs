@@ -23,14 +23,7 @@ namespace utilities_cs_linux {
             RegisterCommands.RegisterAllFCommands();
             if (Settings.SettingsJsonExists()) { Settings.CreateJson(); }
 
-            ProcessStartInfo pythonProcess = new(
-                "python3",
-                PythonSockets
-            ) { CreateNoWindow = true };
-
-            Process.Start(pythonProcess);
-            Console.WriteLine("Python started");
-
+            Process.Start(new ProcessStartInfo("python3", PythonSockets) { CreateNoWindow = true });
             Task.WaitAll(socketListener());
         }
 
@@ -38,11 +31,9 @@ namespace utilities_cs_linux {
             //* creating server on localhost
             Server.Start();
 
-            //* creating client object which represents python
-            var client = Server.AcceptSocket();
-            Console.WriteLine("C# connected");
+            var client = Server.AcceptSocket(); //! This represents python.
 
-            byte[] buffer = new byte[1024]; //* buffer
+            byte[] buffer = new byte[1024];
             int i; //* this will be the length of the byte array read from the stream
             NetworkStream stream = new NetworkStream(client);
 
@@ -61,9 +52,6 @@ namespace utilities_cs_linux {
                     if (result != null) {
                         byte[] msg = Encoding.UTF8.GetBytes(result);
                         // if (msg.Length > 1024) { msg = msg[0..1023]; }
-
-                        Console.WriteLine("Completed Command");
-                        // Console.WriteLine($"Result: {result}");
 
                         await stream.WriteAsync(msg, 0, msg.Length);
                     }
